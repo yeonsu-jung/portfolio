@@ -7,6 +7,8 @@
 //                                             starting as they are scrolled to, scrolling past
 //                                             one, clicking into it, full screen, no JavaScript,
 //                                             a touch screen, and a reader who wants less motion
+//     node tools/site.mjs check <url>         the same against a published copy, for example
+//                                             https://yeonsu-jung.github.io/portfolio/
 //
 // Needs Node 22 or later and google-chrome on the PATH; nothing to install.  Chrome runs
 // headless with software WebGL, so no display or GPU is needed, but the viewers still fetch
@@ -240,8 +242,9 @@ async function posters(only) {
 
 // ------------------------------------------------------------------ check
 
-async function check() {
+async function check(url) {
   const all = slides(), bad = [];
+  const index = url || pathToFileURL(join(ROOT, 'index.html')).href;
   const fail = msg => { bad.push(msg); console.log('  FAIL  ' + msg); };
 
   console.log('files');
@@ -260,11 +263,11 @@ async function check() {
   for (const m of html.matchAll(/href="(index_\w+\.html)#([^"]*)"\s+data-hash="([^"]*)"/g))
     if (m[2] !== m[3]) fail(`a preset's link (${m[1]}#${m[2]}) and its data-hash (${m[3]}) differ`);
 
-  console.log('index.html in Chrome, 1440 x 900');
+  console.log(`${url || 'index.html'} in Chrome, 1440 x 900`);
   const b = await chrome({ width: 1440, height: 900 });
   try {
     const p = await b.page({ w: 1440, h: 900 });
-    await p.goto(pathToFileURL(join(ROOT, 'index.html')).href);
+    await p.goto(index);
     await sleep(1200);
     const broken = await p.eval(`[...document.images].filter(i => i.complete && !i.naturalWidth).map(i => i.getAttribute('src'))`);
     for (const src of broken) fail(`image did not load: ${src}`);
@@ -302,14 +305,14 @@ async function check() {
     }
     for (const line of p.logs) fail('index.html: ' + line);
     await p.close();
-    await behaviour(b, fail);
+    await behaviour(b, fail, index, !!url);
   } finally { await b.close(); }
   console.log(bad.length ? `\n${bad.length} problem(s)` : '\nall good');
   return bad.length ? 1 : 0;
 }
 
 // What index.html does, tried the way a visitor would: by scrolling, wheel, click and touch.
-async function behaviour(b, fail) {
+async function behaviour(b, fail, file, published) {
   const expect = (name, cond, detail) => cond ? console.log('  ok    ' + name) : fail(name + (detail === undefined ? '' : ': ' + JSON.stringify(detail)));
   // the state of slide `id`, and of the page around it
   const slide = id => `(() => {
@@ -322,9 +325,8 @@ async function behaviour(b, fail) {
   })()`;
   const loaded = id => `!!document.querySelector('#${id} .screen.is-loaded')`;
   const go = id => `(() => { location.hash = ''; location.hash = '#${id}'; })()`;
-  const file = pathToFileURL(join(ROOT, 'index.html')).href;
 
-  console.log('behaviour, from disk');
+  console.log(published ? 'behaviour, as published' : 'behaviour, from disk');
   let p = await b.page({ w: 1440, h: 900 });
   await p.goto(file + '#whip');
   let t = await p.eval(`({ all: document.querySelectorAll('.slide').length, shown: [...document.querySelectorAll('.slide')].filter(e => e.querySelector('.screen').getBoundingClientRect().height > 0).length, tabs: document.querySelectorAll('[role=tab], [role=tablist]').length })`);
@@ -367,7 +369,7 @@ async function behaviour(b, fail) {
   expect('every slide is shown, as a picture that links to its page', t.tools === 0 && t.shown === t.all && t.linked === t.all, t);
   await p.close();
 
-  console.log('behaviour, over http');
+  console.log(published ? 'behaviour, the largest page' : 'behaviour, over http');
   const types = { '.html': 'text/html; charset=utf-8', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp4': 'video/mp4' };
   const server = createServer((req, res) => {
     const f = resolve(ROOT, decodeURIComponent(new URL(req.url, 'http://localhost').pathname).replace(/^\/+/, '') || 'index.html');
@@ -378,7 +380,7 @@ async function behaviour(b, fail) {
   await new Promise(res => server.listen(0, '127.0.0.1', res));
   try {
     p = await b.page({ w: 1440, h: 900 });
-    await p.goto(`http://127.0.0.1:${server.address().port}/index.html#packing`);
+    await p.goto(published ? file + '#packing' : `http://127.0.0.1:${server.address().port}/index.html#packing`);
     await p.until(loaded('packing'), 60000);
     t = await p.eval(slide('packing'));
     expect('the largest page (21 MB) starts by itself as well', t.frames.join() === 'index_entangle.html#run=AR025-entangle' && !t.active, t);
@@ -429,6 +431,6 @@ async function behaviour(b, fail) {
 const [cmd, ...rest] = process.argv.slice(2);
 try {
   if (cmd === 'posters') await posters(rest);
-  else if (cmd === 'check') process.exitCode = await check();
-  else { console.log('usage: node tools/site.mjs posters [id ...] | check'); process.exitCode = 2; }
+  else if (cmd === 'check') process.exitCode = await check(rest[0]);
+  else { console.log('usage: node tools/site.mjs posters [id ...] | check [url]'); process.exitCode = 2; }
 } catch (e) { console.error(String(e.message || e)); process.exitCode = 1; }

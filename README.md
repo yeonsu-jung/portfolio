@@ -421,6 +421,10 @@ f294ecb306ddf9b15d30a38769ee1c312873a6288dfb58939d0557c628d7db0b  index_xray_seg
   by swipe and tap, and the 21 MB page waiting for a tap; and nothing
   starting by itself for a reader who asks for reduced motion. Last result:
   all good, nothing on the console. It does not look at the pictures.
+  With a URL, `node tools/site.mjs check https://yeonsu-jung.github.io/portfolio/`,
+  the browser part runs against that published copy instead of this folder
+  (102 s). Last result there, on the Pages build of `d1a632c` (2026-10-08
+  23:30): all good.
 - The tool needs Node 22 or later and `google-chrome`; nothing is installed.
   Chrome runs headless with software WebGL and still fetches three.js from the
   CDNs.
@@ -502,7 +506,9 @@ which view no longer shows the run it asks for. The numbers in the captions of
     `https://github.com/yeonsu-jung/portfolio`. I created it **private**
     (22:42). When I next looked (23:23) it was public and GitHub Pages was on
     for `main`, serving `https://yeonsu-jung.github.io/portfolio/`; neither
-    was my doing. So everything in the repository can be read by anyone:
+    was my doing. The published copy passes the check (see `tools/site.mjs`
+    above). So everything in the repository can be read by anyone, among it
+    `https://yeonsu-jung.github.io/portfolio/README.md` and `/plan.html`:
     the X-ray scan (the e01 stack of `rod-packing-hysteresis`, files from
     July 2025), the lattice work, and `README.md` and `plan.md`, which name
     machines, local paths and private artifacts. Whether those belong there
