@@ -104,12 +104,29 @@ button { font: inherit; color: inherit; }
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--rule);
 }
-.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 6px 24px; min-height: var(--bar); }
+.topbar .wrap { display: flex; align-items: center; gap: 6px 22px; min-height: var(--bar); }
 .topbar .who { font-family: var(--f-display); font-weight: 600; font-size: 1.08rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
-.topbar nav { min-width: 0; }
-.topbar ul { display: flex; gap: 2px 18px; overflow-x: auto; scrollbar-width: none; }
-.topbar ul::-webkit-scrollbar { display: none; }
-.topbar nav a {
+/* the tabs of the whole site: this page is one of them */
+.tabs { display: flex; gap: 4px; }
+.tabs a {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-2);
+  padding: 5px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.tabs a:hover { color: var(--accent); }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+/* the sections of this page */
+.topbar .sections { min-width: 0; margin-left: auto; }
+.topbar .sections ul { display: flex; gap: 2px 16px; overflow-x: auto; scrollbar-width: none; }
+.topbar .sections ul::-webkit-scrollbar { display: none; }
+.topbar .sections a {
   font-family: var(--f-mono);
   font-size: var(--fs-micro);
   letter-spacing: 0.06em;
@@ -120,8 +137,8 @@ button { font: inherit; color: inherit; }
   padding-block: 6px;
   display: inline-block;
 }
-.topbar nav a:hover, .topbar nav a[aria-current="true"] { color: var(--accent); }
-.topbar nav a i { font-style: normal; color: var(--ink-3); margin-right: 5px; }
+.topbar .sections a:hover, .topbar .sections a[aria-current="true"] { color: var(--accent); }
+.topbar .sections a i { font-style: normal; color: var(--ink-3); margin-right: 5px; }
 
 /* ---------- hero ---------- */
 .hero { padding-block: 58px 54px; }
@@ -447,6 +464,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1040px) {
+  :root { --bar: 80px; }
+  .topbar .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 7px; }
+  .topbar .sections { flex-basis: 100%; margin-left: 0; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
   .section-head.split { grid-template-columns: minmax(0, 1fr); }
   .seen { max-width: 640px; }
@@ -472,7 +492,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .sheet a { flex: 0 0 58%; scroll-snap-align: start; }
   .tools { margin-left: 0; }
   section.block { padding-block: 46px; }
-  .topbar nav a i { display: none; }
+  .topbar .sections a i { display: none; }
+  .topbar .wrap { column-gap: 12px; }
+  .tabs a { padding: 5px 8px; }
   .screen, .slide[data-kind="page"] .screen { aspect-ratio: auto; height: min(72vh, 560px); max-height: none; }
   .cards, .cards.pair, .asks { grid-template-columns: minmax(0, 1fr); }
   .slide + .slide { margin-top: 64px; }
@@ -493,8 +515,15 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
 
 <header class="topbar">
   <div class="wrap">
-    <a class="who" href="#top">Yeonsu Jung</a>
-    <nav aria-label="Sections">
+    <a class="who" href="/">Yeonsu Jung</a>
+    <nav aria-label="Site">
+      <ul class="tabs">
+        <li><a href="/">Home</a></li>
+        <li><a href="/portfolio/" aria-current="page">Portfolio</a></li>
+        <li><a href="/publications.html">Publications</a></li>
+      </ul>
+    </nav>
+    <nav class="sections" aria-label="Sections of the portfolio">
       <ul>
         <li><a href="#rods"><i>01</i>Rods</a></li>
         <li><a href="#many-body"><i>02</i>Many-body</a></li>
@@ -1050,7 +1079,8 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <li><a href="https://seas.harvard.edu/person/yeonsu-jung" rel="noopener">Harvard SEAS profile</a></li>
         <li><a href="https://github.com/yeonsu-jung" rel="noopener">github.com/yeonsu-jung</a></li>
         <li><a href="https://scholar.google.com/citations?user=BMZc1CcAAAAJ&amp;hl=en" rel="noopener">Google Scholar</a></li>
-        <li><a href="https://yeonsu-jung.github.io" rel="noopener">Full publication list</a></li>
+        <li><a href="/publications.html">All publications</a></li>
+        <li><a href="/Yeonsu_Jung_CV.pdf">CV (PDF)</a></li>
       </ul>
     </div>
     <div class="cv">
@@ -1294,7 +1324,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   }
 
   // which section is in view, for the top bar
-  var links = $$('.topbar nav a');
+  var links = $$('.topbar .sections a');
   if ('IntersectionObserver' in window) {
     var sio = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
