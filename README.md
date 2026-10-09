@@ -497,18 +497,17 @@ which view no longer shows the run it asks for. The numbers in the captions of
 9. `index_lattice.html` follows work that was still changing on 2026-10-08
    (see above); for `index_entangle_opt.html` the page is in git but the
    script that wrote it is not on record.
-10. The site is not published. Since late on 2026-10-08 this folder is a git
+10. The site is public. Since late on 2026-10-08 this folder is a git
     repository, pushed at Yeonsu's request to
-    `https://github.com/yeonsu-jung/portfolio`, which I created **private**
-    because the questions below are open. GitHub Pages is not turned on, and
-    the page has only been opened from disk and from `http://127.0.0.1`.
-    Yeonsu's public site, with the paper list, is
-    `https://yeonsu-jung.github.io`. Before making the repository public or
-    turning Pages on, Yeonsu should decide whether the X-ray scan (the e01
-    stack of `rod-packing-hysteresis`, files from July 2025) and the lattice
-    work may be shown, and whether `README.md` and `plan.md`, which name
-    machines, local paths and private artifacts, should go public with the
-    rest.
+    `https://github.com/yeonsu-jung/portfolio`. I created it **private**
+    (22:42). When I next looked (23:23) it was public and GitHub Pages was on
+    for `main`, serving `https://yeonsu-jung.github.io/portfolio/`; neither
+    was my doing. So everything in the repository can be read by anyone:
+    the X-ray scan (the e01 stack of `rod-packing-hysteresis`, files from
+    July 2025), the lattice work, and `README.md` and `plan.md`, which name
+    machines, local paths and private artifacts. Whether those belong there
+    is Yeonsu's call; I have not removed anything. Yeonsu's older public
+    site, with the paper list, is `https://yeonsu-jung.github.io`.
 11. `plan.md` items 3 and 4 name sources I could not use as given. For item
     3, the only pages under `~/Github/shape-morphing-solver/results` on the
     Lenovo are the two named above, both about the inverse-design work of
