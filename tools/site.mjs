@@ -3,9 +3,10 @@
 //
 //     node tools/site.mjs posters [id ...]    screenshots of the viewers -> posters/, posters/thumbs/
 //     node tools/site.mjs check               open index.html, run every slide and every "view to
-//                                             try", then try the page's own behaviour: scrolling
-//                                             past a viewer, clicking into it, tabs, full screen,
-//                                             no JavaScript, and the size rule over http
+//                                             try", then try the page's own behaviour: viewers
+//                                             starting as they are scrolled to, scrolling past
+//                                             one, clicking into it, full screen, no JavaScript,
+//                                             a touch screen, and a reader who wants less motion
 //
 // Needs Node 22 or later and google-chrome on the PATH; nothing to install.  Chrome runs
 // headless with software WebGL, so no display or GPU is needed, but the viewers still fetch
@@ -43,7 +44,7 @@ function slides() {
   const unesc = s => s.replaceAll('&amp;', '&').replaceAll('&quot;', '"');
   return [...html.matchAll(/<article class="slide"([^>]*)>/g)].map(m => {
     const a = Object.fromEntries([...m[1].matchAll(/([\w-]+)="([^"]*)"/g)].map(x => [x[1], unesc(x[2])]));
-    return { id: a.id, tab: a['data-tab'], kind: a['data-kind'], src: a['data-src'], hash: a['data-hash'] || '',
+    return { id: a.id, name: a['data-name'], kind: a['data-kind'], src: a['data-src'], hash: a['data-hash'] || '',
              shot: a['data-shot'] || '', bytes: +a['data-bytes'] };
   });
 }
@@ -79,7 +80,7 @@ async function chrome({ width = 1280, height = 720 } = {}) {
     ws.send(JSON.stringify({ id, method, params, sessionId }));
   });
 
-  async function page({ w = width, h = height, scale = 1, scheme = 'light', mobile = false } = {}) {
+  async function page({ w = width, h = height, scale = 1, scheme = 'light', mobile = false, reduce = false } = {}) {
     const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
     const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
     const S = (m, p) => send(m, p, sessionId);
@@ -95,7 +96,9 @@ async function chrome({ width = 1280, height = 720 } = {}) {
     });
     await S('Page.enable'); await S('Runtime.enable'); await S('Log.enable');
     await S('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: scale, mobile });
-    await S('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: scheme }] });
+    if (mobile) await S('Emulation.setTouchEmulationEnabled', { enabled: true });
+    await S('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: scheme },
+                                                        { name: 'prefers-reduced-motion', value: reduce ? 'reduce' : 'no-preference' }] });
     const evaluate = async (expression, contextId) => {
       const r = await S('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true, userGesture: true, ...(contextId ? { contextId } : {}) });
       if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text);
@@ -134,6 +137,16 @@ async function chrome({ width = 1280, height = 720 } = {}) {
           await S('Input.dispatchMouseEvent', { type, x, y, button: type === 'mouseMoved' ? 'none' : 'left', clickCount: 1 });
       },
       wheel: (x, y, deltaY) => S('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX: 0, deltaY }),
+      // a finger put down at (x, y) and moved up by `up` px; up = 0 is a tap
+      // (Input.synthesizeScrollGesture does nothing in headless Chrome, hence the single events)
+      async swipe(x, y, up) {
+        await S('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+        for (let k = 1; up && k <= 10; k++) {
+          await S('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - up * k / 10 }] });
+          await sleep(16);
+        }
+        await S('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+      },
       key: (key, code) => S('Input.dispatchKeyEvent', { type: 'keyDown', key, code: key, windowsVirtualKeyCode: code })
         .then(() => S('Input.dispatchKeyEvent', { type: 'keyUp', key, code: key, windowsVirtualKeyCode: code })),
       scripts: on => S('Emulation.setScriptExecutionDisabled', { value: !on }),
@@ -295,52 +308,51 @@ async function check() {
   return bad.length ? 1 : 0;
 }
 
-// What a stage of index.html does, tried the way a visitor would: by wheel, click and key.
+// What index.html does, tried the way a visitor would: by scrolling, wheel, click and touch.
 async function behaviour(b, fail) {
   const expect = (name, cond, detail) => cond ? console.log('  ok    ' + name) : fail(name + (detail === undefined ? '' : ': ' + JSON.stringify(detail)));
-  // the state of the stage that holds slide `id`
-  const stage = id => `(() => {
-    const slide = document.getElementById('${id}'), screen = slide.querySelector('.screen'), st = slide.closest('.stage'), q = screen.getBoundingClientRect();
+  // the state of slide `id`, and of the page around it
+  const slide = id => `(() => {
+    const s = document.getElementById('${id}'), screen = s.querySelector('.screen'), q = screen.getBoundingClientRect();
     return { live: screen.classList.contains('is-loaded'), active: screen.classList.contains('is-active'),
              frames: [...document.querySelectorAll('iframe')].map(f => f.getAttribute('src')),
-             tabs: [...st.querySelectorAll('[role=tab]')].map(t => +(t.getAttribute('aria-selected') === 'true')).join(''),
-             marked: slide.querySelectorAll('.presets a[aria-current]').length, hash: location.hash, y: Math.round(scrollY),
-             x0: q.left + q.width / 2, y0: q.top + q.height / 2, h: Math.round(q.height), full: document.fullscreenElement === st,
-             about: getComputedStyle(slide.querySelector('.about')).display, win: innerHeight };
+             marked: s.querySelectorAll('.presets a[aria-current]').length, y: Math.round(scrollY),
+             x0: q.left + q.width / 2, y0: q.top + q.height / 2, h: Math.round(q.height), win: innerHeight,
+             full: document.fullscreenElement === s.querySelector('.frame'), bar: s.querySelector('.slide-head').getBoundingClientRect().height > 0 };
   })()`;
+  const loaded = id => `!!document.querySelector('#${id} .screen.is-loaded')`;
+  const go = id => `(() => { location.hash = ''; location.hash = '#${id}'; })()`;
   const file = pathToFileURL(join(ROOT, 'index.html')).href;
 
   console.log('behaviour, from disk');
   let p = await b.page({ w: 1440, h: 900 });
   await p.goto(file + '#whip');
-  await p.until(`document.querySelector('#whip .screen.is-loaded')`, 30000);
-  let s = await p.eval(stage('whip'));
-  expect('a viewer in view starts by itself and leaves the mouse alone', s.live && !s.active, s);
+  let t = await p.eval(`({ all: document.querySelectorAll('.slide').length, shown: [...document.querySelectorAll('.slide')].filter(e => e.querySelector('.screen').getBoundingClientRect().height > 0).length, tabs: document.querySelectorAll('[role=tab], [role=tablist]').length })`);
+  expect('every viewer has its own place on the page, none behind a tab', t.all > 0 && t.shown === t.all && t.tabs === 0, t);
+  await p.until(loaded('whip'), 30000);
+  let s = await p.eval(slide('whip'));
+  expect('a viewer scrolled to starts by itself and leaves the mouse alone', s.live && !s.active, s);
   await p.wheel(s.x0, s.y0, 240); await sleep(900);
-  let t = await p.eval(stage('whip'));
+  t = await p.eval(slide('whip'));
   expect('the wheel over a running viewer scrolls the page', t.y > s.y + 100, [s.y, t.y]);
   await p.eval(`scrollTo({ top: ${s.y}, behavior: 'instant' })`); await sleep(400);
   await p.click(s.x0, s.y0); await sleep(500);
-  t = await p.eval(stage('whip'));
+  t = await p.eval(slide('whip'));
   expect('a click on the view makes it interactive', t.active, t);
   await p.wheel(s.x0, s.y0, 240); await sleep(900);
-  t = await p.eval(stage('whip'));
+  t = await p.eval(slide('whip'));
   expect('and then the wheel goes to the viewer', Math.abs(t.y - s.y) < 5, [s.y, t.y]);
   await p.click(40, 500); await sleep(400);
-  t = await p.eval(stage('whip'));
+  t = await p.eval(slide('whip'));
   expect('a click outside gives the wheel back', t.live && !t.active, t);
-  await p.eval(`document.getElementById('tab-catflip').click()`);
-  await p.until(`document.querySelector('#catflip .screen.is-loaded')`, 30000);
-  t = await p.eval(stage('catflip'));
-  expect('another tab takes over the stage and the address', t.frames.join() === 'index_catflip.html#run=planned' && t.tabs === '010' && t.hash === '#catflip' && t.marked === 1, t);
-  await p.eval(`document.getElementById('tab-catflip').focus()`);
-  await p.key('ArrowRight', 39);
-  await p.until(`document.querySelector('#cobra .screen.is-loaded')`, 30000);
-  t = await p.eval(stage('cobra'));
-  expect('the arrow keys move between tabs', t.tabs === '001' && t.frames.join() === 'index_cobra.html#run=rollout', t);
-  await p.eval(`document.getElementById('cobra').closest('.stage').requestFullscreen().then(() => new Promise(res => setTimeout(res, 900)))`).catch(() => {});
-  t = await p.eval(stage('cobra'));
-  expect('full screen keeps the tabs, fills the window and takes input', t.full && t.active && t.about === 'none' && t.h > t.win - 90, t);
+  await p.eval(go('catflip'));
+  await p.until(loaded('catflip'), 30000);
+  await p.until(`!document.querySelector('#whip iframe')`, 12000);
+  t = await p.eval(slide('catflip'));
+  expect('scrolling on starts the next viewer and puts the last one away', t.frames.join() === 'index_catflip.html#run=planned' && t.marked === 1, t);
+  await p.eval(`document.querySelector('#catflip .frame').requestFullscreen().then(() => new Promise(res => setTimeout(res, 900)))`).catch(() => {});
+  t = await p.eval(slide('catflip'));
+  expect('full screen fills the window with one viewer and its title bar, and takes input', t.full && t.active && t.bar && t.h > t.win - 110, t);
   await p.eval(`document.exitFullscreen()`).catch(() => {});
   for (const line of p.logs) fail('index.html: ' + line);
   await p.close();
@@ -350,9 +362,9 @@ async function behaviour(b, fail) {
   await p.scripts(false);
   await p.goto(file);
   await p.scripts(true);                 // only to look: the page's own scripts never ran
-  t = await p.eval(`({ bars: document.querySelectorAll('.tabbar').length, shown: [...document.querySelectorAll('.slide')].filter(e => e.getBoundingClientRect().height > 0).length,
+  t = await p.eval(`({ tools: document.querySelectorAll('.tools').length, shown: [...document.querySelectorAll('.slide')].filter(e => e.getBoundingClientRect().height > 0).length,
                        linked: [...document.querySelectorAll('.slide')].filter(e => e.querySelector('.poster').getAttribute('href').startsWith(e.dataset.src)).length, all: document.querySelectorAll('.slide').length })`);
-  expect('every slide is shown, as a picture that links to its page', t.bars === 0 && t.shown === t.all && t.linked === t.all, t);
+  expect('every slide is shown, as a picture that links to its page', t.tools === 0 && t.shown === t.all && t.linked === t.all, t);
   await p.close();
 
   console.log('behaviour, over http');
@@ -366,20 +378,50 @@ async function behaviour(b, fail) {
   await new Promise(res => server.listen(0, '127.0.0.1', res));
   try {
     p = await b.page({ w: 1440, h: 900 });
-    await p.goto(`http://127.0.0.1:${server.address().port}/index.html#gripper`);
-    await p.until(`document.querySelector('#gripper .screen.is-loaded')`, 30000);
-    t = await p.eval(stage('gripper'));
-    expect('a page under 8 MB still starts by itself', t.frames.join() === 'index_tentacle.html#run=seed6', t);
-    await p.eval(`document.getElementById('tab-packing').click()`); await sleep(2500);
-    t = await p.eval(stage('packing'));
-    expect('the 21 MB page waits for a click, even on a running stage', t.frames.length === 0 && t.tabs === '100', t);
-    await p.eval(`document.querySelector('#packing .poster').click()`);
-    await p.until(`document.querySelector('#packing .screen.is-loaded')`, 60000);
-    t = await p.eval(stage('packing'));
-    expect('and loads on that click, taking input', t.frames.join() === 'index_entangle.html#run=AR025-entangle' && t.active, t);
+    await p.goto(`http://127.0.0.1:${server.address().port}/index.html#packing`);
+    await p.until(loaded('packing'), 60000);
+    t = await p.eval(slide('packing'));
+    expect('the largest page (21 MB) starts by itself as well', t.frames.join() === 'index_entangle.html#run=AR025-entangle' && !t.active, t);
     for (const line of p.logs) fail('index.html over http: ' + line);
     await p.close();
   } finally { server.close(); server.closeAllConnections(); }
+
+  console.log('behaviour, touch screen (390 x 844)');
+  p = await b.page({ w: 390, h: 844, mobile: true });
+  await p.goto(file + '#whip');
+  await p.until(loaded('whip'), 30000);
+  s = await p.eval(slide('whip'));
+  expect('a viewer scrolled to starts by itself and leaves the finger alone', s.live && !s.active, s);
+  await p.swipe(s.x0, s.y0, 300); await sleep(700);
+  t = await p.eval(slide('whip'));
+  expect('a swipe over a running viewer scrolls the page', t.y > s.y + 100, [s.y, t.y]);
+  await p.eval(`scrollTo({ top: ${s.y}, behavior: 'instant' })`); await sleep(400);
+  await p.swipe(s.x0, s.y0, 0); await sleep(600);
+  t = await p.eval(slide('whip'));
+  expect('a tap on the view makes it interactive', t.active, t);
+  await p.swipe(s.x0, s.y0, 300); await sleep(700);
+  t = await p.eval(slide('whip'));
+  expect('and then a swipe goes to the viewer', Math.abs(t.y - s.y) < 5, [s.y, t.y]);
+  await p.eval(go('packing')); await sleep(3500);
+  t = await p.eval(slide('packing'));
+  expect('the 21 MB page waits for a tap', !t.frames.some(f => f.startsWith('index_entangle.html')), t);
+  await p.eval(`document.querySelector('#packing .poster').click()`);
+  await p.until(loaded('packing'), 60000);
+  t = await p.eval(slide('packing'));
+  expect('and loads on that tap, taking input', t.live && t.active, t);
+  for (const line of p.logs) fail('index.html, touch: ' + line);
+  await p.close();
+
+  console.log('behaviour, reduced motion');
+  p = await b.page({ w: 1440, h: 900, reduce: true });
+  await p.goto(file + '#whip'); await sleep(3500);
+  t = await p.eval(slide('whip'));
+  expect('nothing starts by itself', t.frames.length === 0, t);
+  await p.eval(`document.querySelector('#whip .poster').click()`);
+  await p.until(loaded('whip'), 30000);
+  t = await p.eval(slide('whip'));
+  expect('a click on the picture still runs it', t.live && t.active, t);
+  await p.close();
 }
 
 // ------------------------------------------------------------------ main

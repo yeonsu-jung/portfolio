@@ -125,7 +125,7 @@ button { font: inherit; color: inherit; }
 
 /* ---------- hero ---------- */
 .hero { padding-block: 58px 54px; }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 52px; align-items: center; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 52px; align-items: center; }
 .hero h1 {
   font-family: var(--f-display);
   font-weight: 600;
@@ -135,6 +135,8 @@ button { font: inherit; color: inherit; }
   margin: 14px 0 12px;
 }
 .hero .role { font-family: var(--f-mono); font-size: var(--fs-mono); color: var(--ink-2); margin-bottom: 22px; }
+.hero .role a { color: inherit; }
+.hero .role a:hover { color: var(--accent); }
 .hero .lede { font-size: var(--fs-lede); line-height: 1.55; max-width: 34em; margin-bottom: 14px; }
 .hero .how { color: var(--ink-2); max-width: 36em; margin-bottom: 24px; }
 .links { display: flex; flex-wrap: wrap; gap: 8px 10px; }
@@ -204,28 +206,16 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .section-head .paper { font-size: var(--fs-small); color: var(--ink-3); }
 .section-head .paper b { color: var(--ink-2); font-weight: 500; }
 
-/* ---------- stage: tabs, screen, caption ---------- */
-.stage { background: var(--bg); scroll-margin-top: 14px; }
-.tabbar { display: none; align-items: flex-end; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; margin-bottom: 10px; }
-.js .tabbar { display: flex; }
-.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-.tabs button {
-  font-family: var(--f-mono);
-  font-size: var(--fs-mono);
-  letter-spacing: 0.01em;
-  background: transparent;
-  color: var(--ink-2);
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  padding: 6px 14px;
-  cursor: pointer;
-  line-height: 1.3;
-}
-.tabs button i { font-style: normal; color: var(--ink-3); margin-right: 7px; }
-.tabs button:hover { border-color: var(--accent); color: var(--accent); }
-.tabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-.tabs button[aria-selected="true"] i { color: inherit; opacity: 0.6; }
+/* ---------- a slide: title bar, screen, caption. Every slide is on the page; nothing is behind a tab ---------- */
+.slide { scroll-margin-top: 14px; }
+.slide + .slide { margin-top: 88px; }
+.frame { background: var(--bg); }
+.slide-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.slide-head .what { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.slide-head .num { font-family: var(--f-mono); font-size: var(--fs-mono); font-weight: 500; color: var(--accent); }
+.slide-head h3 { font-family: var(--f-display); font-weight: 600; font-size: var(--fs-h3); line-height: 1.12; }
 .tools { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+.tools [hidden] { display: none; }
 .tools .state { font-family: var(--f-mono); font-size: var(--fs-micro); color: var(--ink-3); margin-right: 6px; }
 .tools button, .tools a {
   display: inline-flex;
@@ -247,9 +237,6 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .tools button:hover, .tools a:hover { border-color: var(--accent); color: var(--accent); }
 .tools svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
-.slide + .slide { margin-top: 44px; }
-.js .slide + .slide { margin-top: 0; }
-.slide[hidden] { display: none; }
 .screen {
   position: relative;
   width: 100%;
@@ -343,7 +330,6 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .veil:hover span, .veil:focus-visible span, .screen.hint .veil span { opacity: 1; transform: none; }
 
 .about { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 22px 52px; align-items: start; margin-top: 22px; }
-.about h3 { font-family: var(--f-display); font-weight: 600; font-size: var(--fs-h3); line-height: 1.12; margin-bottom: 6px; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .tags li {
   font-family: var(--f-mono);
@@ -393,13 +379,13 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .spec dd { margin: 3px 0 11px; color: var(--ink); }
 .spec dd small { display: block; font-size: var(--fs-micro); font-family: var(--f-mono); color: var(--ink-3); margin-top: 3px; line-height: 1.5; }
 
-.stage:fullscreen { display: flex; flex-direction: column; padding: 12px 14px 14px; overflow: hidden; }
-.stage:fullscreen .slide:not([hidden]) { flex: 1; display: flex; min-height: 0; }
-.stage:fullscreen .screen { flex: 1; aspect-ratio: auto; max-height: none; height: auto; }
-.stage:fullscreen .about { display: none; }
+.frame:fullscreen { display: flex; flex-direction: column; padding: 12px 14px 14px; overflow: hidden; }
+.frame:fullscreen .slide-head { flex: none; }
+.frame:fullscreen .screen { flex: 1; aspect-ratio: auto; max-height: none; height: auto; }
 
 /* ---------- cards (PhD, miscellaneous) ---------- */
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 34px; }
+.cards.pair { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 880px; }
 .cards li { border-top: 1px solid var(--rule-strong); padding-top: 14px; display: flex; flex-direction: column; gap: 6px; }
 .cards .kind { font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); }
 .cards h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
@@ -469,7 +455,8 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   section.block { padding-block: 46px; }
   .topbar nav a i { display: none; }
   .screen, .slide[data-kind="page"] .screen { aspect-ratio: auto; height: min(72vh, 560px); max-height: none; }
-  .cards, .asks { grid-template-columns: minmax(0, 1fr); }
+  .cards, .cards.pair, .asks { grid-template-columns: minmax(0, 1fr); }
+  .slide + .slide { margin-top: 64px; }
   .tools .state { display: none; }
   .ledger thead { display: none; }
   .ledger, .ledger tbody, .ledger tr, .ledger th, .ledger td { display: block; }
@@ -477,8 +464,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .ledger th, .ledger td { border: 0; padding: 1px 0; white-space: normal; }
 }
 @media print {
-  .topbar, .tabbar, .run, .veil { display: none !important; }
-  .slide[hidden] { display: block; }
+  .topbar, .tools, .run, .veil { display: none !important; }
   .slide + .slide { margin-top: 30px; }
 }
 </style>
@@ -512,9 +498,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
       <div>
         <p class="eyebrow">Interactive portfolio · simulation and optimization</p>
         <h1>Yeonsu Jung</h1>
-        <p class="role">Postdoctoral Fellow · Harvard SEAS · Mahadevan group</p>
+        <p class="role">Research Associate · <a href="https://seas.harvard.edu/person/yeonsu-jung" rel="noopener">Applied Mathematics, Harvard SEAS</a> · Mahadevan group</p>
         <p class="lede">I simulate slender things in contact (whips, snakes, rod packings, filament grippers, printed lattices) and use optimization to make them do something on purpose, or to explain why they hold together.</p>
-        <p class="how">Sections 1 to 4 are live. Each panel is a recorded simulation or reconstruction, not a video: orbit it, scrub through it, switch runs, put two side by side.</p>
+        <p class="how">Sections 1 to 4 are live. Each panel is a recorded simulation or reconstruction, not a video. It starts when you scroll to it; click it to orbit, scrub through time, switch runs, or put two side by side.</p>
         <ul class="links">
           <li><a class="primary" href="#rods">Start with the whip</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -529,9 +515,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <a href="#cobra"><img src="posters/thumbs/cobra.webp" width="480" height="270" alt="" decoding="async"><span><i>1.3</i>Cobra</span></a>
         <a href="#packing"><img src="posters/thumbs/packing.webp" width="480" height="270" alt="" decoding="async"><span><i>2.1</i>Rod packing</span></a>
         <a href="#gripper"><img src="posters/thumbs/gripper.webp" width="480" height="270" alt="" decoding="async"><span><i>2.2</i>Filament gripper</span></a>
-        <a href="#linking"><picture><source srcset="posters/thumbs/linking-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/linking.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>2.3</i>Maximal entanglement</span></a>
+        <a href="#linking"><picture><source srcset="posters/thumbs/linking-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/linking.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>2.3</i>Entangling rods</span></a>
         <a href="#lattice"><picture><source srcset="posters/thumbs/lattice-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/lattice.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>3.1</i>Snake lattice</span></a>
-        <a href="#scan"><picture><source srcset="posters/thumbs/scan-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/scan.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>4.1</i>X-ray: a whole scan</span></a>
+        <a href="#scan"><picture><source srcset="posters/thumbs/scan-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/scan.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>4.1</i>X-ray: a scan</span></a>
         <a href="#segment"><picture><source srcset="posters/thumbs/segment-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/segment.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>4.2</i>X-ray: one rod</span></a>
       </nav>
     </div>
@@ -547,18 +533,22 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <p class="paper"><b>Paper</b> · Y. Jung, “Geometrically exact Kirchhoff rods in joint coordinates: dynamic fidelity and control applications” (tentative title), in preparation.</p>
       </div>
 
-      <div class="stage" data-stage aria-label="Rods in joint coordinates: three slides">
+      <div class="slides">
 
-        <article class="slide" id="whip" data-tab="Whip crack" data-kind="app" data-src="index_whip.html" data-hash="run=crack" data-bytes="4125477" data-shot="run=crack&amp;t=0.392&amp;cam=-1.646,4.385,0.586,1.350,0.107,-0.524">
-          <div class="screen">
-            <a class="poster" href="index_whip.html#run=crack">
-              <img src="posters/whip.webp" width="1600" height="900" alt="A simulated 3 m whip in mid-crack: the tip, trailing a bright path, closes on a small red target." decoding="async">
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>4.1 MB</small></span>
-            </a>
+        <article class="slide" id="whip" data-name="Whip crack" data-kind="app" data-src="index_whip.html" data-hash="run=crack" data-bytes="4125477" data-shot="run=crack&amp;t=0.392&amp;cam=-1.646,4.385,0.586,1.350,0.107,-0.524">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">1.1</span><h3>Whip cracking</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_whip.html#run=crack">
+                <img src="posters/whip.webp" width="1600" height="900" alt="A simulated 3 m whip in mid-crack: the tip, trailing a bright path, closes on a small red target." decoding="async">
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>4.1 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>Whip cracking</h3>
               <ul class="tags"><li>PDE-constrained optimization</li><li>differentiable simulation</li><li>periodic LQR</li></ul>
               <p>A 3 m tapered whip of 40 elastic links on a five-axis shoulder (three slides and two hinges), the only motors. A 0.25 s open-loop drive, found by differentiating through the simulation, sends a wave down the whip: the tip passes 5.8 mm from the target at 68 m/s, 6.8 times the hand's top speed.</p>
               <p>The other runs put the same rig on a periodic orbit, one crack a second at 58 m/s. The orbit is unstable (a deviation grows 52-fold per period), so a periodic LQR on the shoulder motors holds it. Without feedback, rounding error alone grows the miss from 2.7 µm to 25.7 mm in eight periods.</p>
@@ -580,16 +570,20 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           </div>
         </article>
 
-        <article class="slide" id="catflip" data-tab="Cat flip" data-kind="app" data-src="index_catflip.html" data-hash="run=planned" data-bytes="177689" data-shot="run=planned&amp;t=0.767">
-          <div class="screen">
-            <a class="poster" href="index_catflip.html#run=planned">
-              <img src="posters/catflip.webp" width="1600" height="900" alt="A cartoon cat drawn on two jointed links, bent at the waist and floating in mid-air." loading="lazy" decoding="async">
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>0.2 MB</small></span>
-            </a>
+        <article class="slide" id="catflip" data-name="Cat flip" data-kind="app" data-src="index_catflip.html" data-hash="run=planned" data-bytes="177689" data-shot="run=planned&amp;t=0.767">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">1.2</span><h3>Holonomy: the two-link cat flip</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_catflip.html#run=planned">
+                <img src="posters/catflip.webp" width="1600" height="900" alt="A cartoon cat drawn on two jointed links, bent at the waist and floating in mid-air." loading="lazy" decoding="async">
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>0.2 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>Holonomy: the two-link cat flip</h3>
               <ul class="tags"><li>holonomy</li><li>PDE-constrained optimization</li><li>differentiable simulation</li></ul>
               <p>The falling-cat problem at its smallest: two links on one ball joint, floating with no angular momentum. The joint bends 90°, the plane of the bend is carried 273° around the body, and the joint straightens. The body comes out rolled 180° about its long axis although the joint never twists. The rotation is a holonomy: it comes from the loop the joint traces, not from any spin.</p>
               <p>Executed by motors bounded at 12 N m, the same gait lands at 179.9°; four times faster the motors saturate and it overshoots to 192.9°. A smooth gait found by optimization comes within 2° of the half turn with torques that peak at 0.75 N m.</p>
@@ -612,16 +606,20 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           </div>
         </article>
 
-        <article class="slide" id="cobra" data-tab="Cobra" data-kind="app" data-src="index_cobra.html" data-hash="run=rollout" data-bytes="185782" data-shot="run=rollout&amp;t=12">
-          <div class="screen">
-            <a class="poster" href="index_cobra.html#run=rollout">
-              <img src="posters/cobra.webp" width="1600" height="900" alt="A green chain of 16 links lying on a floor with its far end reared upright." loading="lazy" decoding="async">
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>0.2 MB</small></span>
-            </a>
+        <article class="slide" id="cobra" data-name="Cobra" data-kind="app" data-src="index_cobra.html" data-hash="run=rollout" data-bytes="185782" data-shot="run=rollout&amp;t=12">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">1.3</span><h3>Cobra rearing</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_cobra.html#run=rollout">
+                <img src="posters/cobra.webp" width="1600" height="900" alt="A green chain of 16 links lying on a floor with its far end reared upright." loading="lazy" decoding="async">
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>0.2 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>Cobra rearing</h3>
               <ul class="tags"><li>reinforcement learning</li><li>PPO</li></ul>
               <p>A chain of 16 links, 1.44 m long, lies on the floor, with a motor at each of its 15 ball joints and the rod's elastic law between the links. A policy trained by reinforcement learning (PPO, 400 iterations) rears the far end into a cobra pose and holds it: over the second half of the 18 s episode the head stays 0.56 m up, with 6 links off the floor.</p>
               <div class="presets">
@@ -654,18 +652,22 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <p>Many thin bodies can hold together, or hold an object, with no single strong contact. What matters is collective: how they wind around and cage one another. Three views of that: a packing as it entangles, a gripper that grasps by tangling, and entanglement made into the objective.</p>
       </div>
 
-      <div class="stage" data-stage aria-label="Many-body simulations: three slides">
+      <div class="slides">
 
-        <article class="slide" id="packing" data-tab="Rod packing" data-kind="app" data-src="index_entangle.html" data-hash="run=AR025-entangle" data-bytes="21518899" data-shot="run=AR025-entangle&amp;t=1.64&amp;cam=2.412,-1.919,0.670,0.02,0.02,-0.3">
-          <div class="screen">
-            <a class="poster" href="index_entangle.html#run=AR025-entangle">
-              <img src="posters/packing.webp" width="1600" height="900" alt="More than a hundred coloured rods piled and entangled inside a tall box drawn in outline." loading="lazy" decoding="async">
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>21 MB</small></span>
-            </a>
+        <article class="slide" id="packing" data-name="Rod packing" data-kind="app" data-src="index_entangle.html" data-hash="run=AR025-entangle" data-bytes="21518899" data-shot="run=AR025-entangle&amp;t=1.64&amp;cam=2.412,-1.919,0.670,0.02,0.02,-0.3">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">2.1</span><h3>Rod packing dynamics</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_entangle.html#run=AR025-entangle">
+                <img src="posters/packing.webp" width="1600" height="900" alt="More than a hundred coloured rods piled and entangled inside a tall box drawn in outline." loading="lazy" decoding="async">
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>21 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>Rod packing dynamics</h3>
               <ul class="tags"><li>contact</li><li>entanglement</li></ul>
               <p>Rods entangling in a shaken box: 125 rods of aspect ratio 25, and 1,500 rods of aspect ratio 300, five seconds each. Follow the contacts per rod, the largest cluster or the mean speed over time, and put the two aspect ratios side by side.</p>
               <p class="note">In the paper, X-ray tomography and simulation show that as rods get longer, regions of strong entanglement spread until they percolate through the packing, together with a sharp change in its mechanical stability.</p>
@@ -686,16 +688,20 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           </div>
         </article>
 
-        <article class="slide" id="gripper" data-tab="Filament gripper" data-kind="app" data-src="index_tentacle.html" data-hash="run=seed6" data-bytes="5600674" data-shot="run=seed6&amp;t=7.2&amp;cam=-0.288,-0.233,0.481,0,-0.008,0.362">
-          <div class="screen">
-            <a class="poster" href="index_tentacle.html#run=seed6">
-              <img src="posters/gripper.webp" width="1600" height="900" alt="Twelve thin filaments hanging from a hub, curled and tangled around a yellow ball that they have lifted." loading="lazy" decoding="async">
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>5.6 MB</small></span>
-            </a>
+        <article class="slide" id="gripper" data-name="Filament gripper" data-kind="app" data-src="index_tentacle.html" data-hash="run=seed6" data-bytes="5600674" data-shot="run=seed6&amp;t=7.2&amp;cam=-0.288,-0.233,0.481,0,-0.008,0.362">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">2.2</span><h3>Grasping by tangling</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_tentacle.html#run=seed6">
+                <img src="posters/gripper.webp" width="1600" height="900" alt="Twelve thin filaments hanging from a hub, curled and tangled around a yellow ball that they have lifted." loading="lazy" decoding="async">
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>5.6 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>Grasping by tangling</h3>
               <ul class="tags"><li>stochastic grasping</li><li>contact</li></ul>
               <p>Twelve pneumatic filaments hang from a hub: the entanglement gripper of Becker et al. Each is simulated here, with the rod model of section 1, as a chain of 40 elastic links whose natural curvature rises with the pressure. Lowered around a 65 mm foam ball and pressurized, they curl and tangle, and the hub lifts.</p>
               <p>The grasp is stochastic. With the curl directions drawn at random, 12 of 20 draws carried this ball; two of the runs here show a drop and a knock-off.</p>
@@ -718,23 +724,27 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           </div>
         </article>
 
-        <article class="slide" id="linking" data-tab="Maximal entanglement" data-kind="page" data-src="index_entangle_opt.html" data-bytes="310250">
-          <div class="screen">
-            <a class="poster" href="index_entangle_opt.html">
-              <picture><source srcset="posters/linking-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/linking.webp" width="1600" height="1000" alt="Fifteen thick orange rods jammed together in a tangled cluster." loading="lazy" decoding="async"></picture>
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>0.3 MB</small></span>
-            </a>
+        <article class="slide" id="linking" data-name="Maximal entanglement" data-kind="page" data-src="index_entangle_opt.html" data-bytes="423633">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">2.3</span><h3>Entanglement as the objective</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_entangle_opt.html">
+                <picture><source srcset="posters/linking-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/linking.webp" width="1600" height="1000" alt="Fifteen long orange rods tangled into one bundle." loading="lazy" decoding="async"></picture>
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>0.4 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>Entanglement as the objective</h3>
               <ul class="tags"><li>optimization</li><li>linking number</li><li>non-penetration</li></ul>
-              <p>Fifteen rods start parallel with their centres on a ring. A minimiser then raises the total linking number between them, while a stiff repulsion pushes apart any pair that comes closer than one rod diameter. Σ|Lk| climbs from 0 to 31.4 over the 105 pairs; because the repulsion is a penalty and not a hard constraint, the rods end up pressed 2–4% into each other.</p>
+              <p>Fifteen rods of aspect ratio 30 start parallel with their centres on a ring. A minimiser then raises the total linking number between them, while a stiff repulsion pushes apart any pair that comes closer than one rod diameter. The run stops by the solver's own rule after 111,620 iterations, with Σ|Lk| up from 0 to 45.2 over the 105 pairs. The repulsion is a penalty, not a hard constraint, so the rods end up pressed 1–2% into each other.</p>
               <p class="note">In the paper, packings that maximize the average crossing number under non-penetration turn out to be self-caged: held together by repulsion and friction alone.</p>
             </div>
             <dl class="spec">
               <dt>Paper</dt><dd><span class="me">Y. Jung</span>, L. Mahadevan. <a href="https://arxiv.org/abs/2606.03952" rel="noopener">Emergent cohesion via self-caging in maximally entangled rod packings</a>.<small>Physical Review Letters, under revision · arXiv:2606.03952</small></dd>
-              <dt>Shown</dt><dd>One run of 3,000 iterations · 15 rods, length 2, radius 0.1</dd>
+              <dt>Shown</dt><dd>One run to convergence, 111,620 iterations · 15 rods, length 6, radius 0.1</dd>
             </dl>
           </div>
         </article>
@@ -753,24 +763,29 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <p>In the paper, discrete elastic rod simulations predict the shapes that the printed lattices take when heated. The viewer is the problem that follows, and it is still open: choosing the change span by span so that a flat lattice deploys into a surface asked for in advance.</p>
       </div>
 
-      <div class="stage" data-stage aria-label="Shape-morphing lattices: one slide">
+      <div class="slides">
 
-        <article class="slide" id="lattice" data-tab="Flat to dome or saddle" data-kind="page" data-src="index_lattice.html" data-bytes="1437221">
-          <div class="screen">
-            <a class="poster" href="index_lattice.html">
-              <picture><source srcset="posters/lattice-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/lattice.webp" width="1600" height="1000" alt="A square lattice of wavy rods bulging upward into a dome." loading="lazy" decoding="async"></picture>
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>1.4 MB</small></span>
-            </a>
+        <article class="slide" id="lattice" data-name="Flat to dome or saddle" data-kind="page" data-src="index_lattice.html" data-bytes="1557830">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">3.1</span><h3>From flat to a dome or a saddle</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_lattice.html">
+                <picture><source srcset="posters/lattice-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/lattice.webp" width="1600" height="1000" alt="A square lattice of wavy rods bulging upward into a dome." loading="lazy" decoding="async"></picture>
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>1.6 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>From flat to a dome or a saddle</h3>
-              <ul class="tags"><li>inverse design</li><li>equilibrium of rod networks</li><li>ongoing work</li></ul>
+              <ul class="tags"><li>inverse design</li><li>Newton's method</li><li>ongoing work</li></ul>
               <p>Two ways to choose the change in curvature. Two levels: one value for the inner spans and the opposite for the outer ones, up to ±30%. Optimized: one value per span, fitted to a target surface. Drag the slider to apply the change gradually, starting from the exact flat lattice, and watch the height and the two principal curvatures of the surface respond.</p>
               <p class="note">Lattices of 5 × 5 and 7 × 7 crossings. The model has no contact, and a small transverse load, released at the end, picks the side the sheet buckles to.</p>
             </div>
             <dl class="spec">
               <dt>Paper</dt><dd>M. K. Abdelrahman, J. K. Wilt, <span class="me">Y. Jung</span>, R. Telles, G. K. Paink, N. M. Larson, J. Aizenberg, L. Mahadevan, J. A. Lewis. <a href="https://doi.org/10.1073/pnas.2537250123" rel="noopener">Rotational 3D printing of active–passive filaments and lattices with programmable shape morphing</a>.<small>PNAS 123, e2537250123 (2026)</small></dd>
+              <dt>Solved by</dt><dd>Newton's method for every equilibrium (sparse, damped, with a kick out of unstable states); Gauss–Newton for the fitted designs</dd>
               <dt>Shown</dt><dd>Equilibria along a ramp of the curvature change, in 1% steps</dd>
             </dl>
           </div>
@@ -789,18 +804,22 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <p>To compare a real packing with a simulated one, the tomogram first has to become a list of rods. The pipeline matches cylinders to voxels: find a rod, trace it, remove its voxels, look for the next. Fitting one cylinder is a small optimization problem: it can be done by direct search or, more simply, by a trimmed principal-component fit, which is a singular value decomposition.</p>
       </div>
 
-      <div class="stage" data-stage aria-label="X-ray reconstruction: two slides">
+      <div class="slides">
 
-        <article class="slide" id="scan" data-tab="A whole scan" data-kind="page" data-src="index_xray_stack.html" data-bytes="1655950">
-          <div class="screen">
-            <a class="poster" href="index_xray_stack.html">
-              <picture><source srcset="posters/scan-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/scan.webp" width="1600" height="1000" alt="Thousands of thin rods, coloured by direction, filling a squat cylindrical volume." loading="lazy" decoding="async"></picture>
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>1.7 MB</small></span>
-            </a>
+        <article class="slide" id="scan" data-name="A whole scan" data-kind="page" data-src="index_xray_stack.html" data-bytes="1655950">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">4.1</span><h3>A whole scan, rod by rod</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_xray_stack.html">
+                <picture><source srcset="posters/scan-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/scan.webp" width="1600" height="1000" alt="Thousands of thin rods, coloured by direction, filling a squat cylindrical volume." loading="lazy" decoding="async"></picture>
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>1.7 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>A whole scan, rod by rod</h3>
               <ul class="tags"><li>X-ray tomography</li><li>segmentation</li></ul>
               <p>Every rod the cylinder-matching pipeline found in one image stack: 4,582 rods in 2000 × 2000 × 741 voxels, from 4,664 traces made in 722 s, then cut at kinks and joined into whole rods. Press Play to watch them appear in the order they were found. Colour them by direction or length, cut a slab through the pack, or click a rod to read its numbers.</p>
             </div>
@@ -811,16 +830,20 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           </div>
         </article>
 
-        <article class="slide" id="segment" data-tab="How a rod is found" data-kind="page" data-src="index_xray_segment.html" data-bytes="3715115">
-          <div class="screen">
-            <a class="poster" href="index_xray_segment.html">
-              <picture><source srcset="posters/segment-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/segment.webp" width="1600" height="1000" alt="A block of voxels in which every rod has been given its own colour and a traced centreline." loading="lazy" decoding="async"></picture>
-              <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>3.7 MB</small></span>
-            </a>
+        <article class="slide" id="segment" data-name="How a rod is found" data-kind="page" data-src="index_xray_segment.html" data-bytes="3715115">
+          <div class="frame">
+            <header class="slide-head">
+              <div class="what"><span class="num">4.2</span><h3>How one rod is found</h3></div>
+            </header>
+            <div class="screen">
+              <a class="poster" href="index_xray_segment.html">
+                <picture><source srcset="posters/segment-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/segment.webp" width="1600" height="1000" alt="A block of voxels in which every rod has been given its own colour and a traced centreline." loading="lazy" decoding="async"></picture>
+                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>3.7 MB</small></span>
+              </a>
+            </div>
           </div>
           <div class="about">
             <div>
-              <h3>How one rod is found</h3>
               <ul class="tags"><li>optimization</li><li>trimmed PCA (SVD)</li><li>direct search</li></ul>
               <p>A 201³-voxel crop from the dense centre of a packing, 442,435 rod voxels, segmented by four versions of the pipeline. Play runs two of them on the same clock, at their measured speeds.</p>
               <p>Further down the page, one cylinder fit is taken step by step. A trimmed principal-component fit and a direct search (fminsearch) start from the same deliberately poor guess, 1.5 voxels off centre and 12° tilted, and each tries to fill the cylinder with voxels.</p>
@@ -891,7 +914,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <p class="eyebrow"><b>06</b> · Miscellaneous</p>
         <h2 id="more-h">Smaller tools and studies</h2>
       </div>
-      <ul class="cards">
+      <ul class="cards pair">
         <li>
           <div class="clip"><video muted loop playsinline controls preload="none" poster="media/snake.jpg" width="768" height="432" aria-label="A snake-shaped glider tumbles after launch, then rights itself and glides belly-down."><source src="media/snake.mp4" type="video/mp4"></video></div>
           <span class="kind">Control · MuJoCo</span>
@@ -903,11 +926,6 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           <span class="kind">MuJoCo C API</span>
           <h3>Low-Reynolds swimmer in MuJoCo</h3>
           <p class="blurb">A flagellated swimmer driven through a resistance matrix. It advances 0.0326 m per motor revolution regardless of viscosity, and a scallop-theorem test closes to 0.02%.</p>
-        </li>
-        <li>
-          <span class="kind">Perception</span>
-          <h3>Filament reconstruction from video</h3>
-          <p class="blurb">The 3D centreline of a hair-thin filament from a single-camera turntable movie, followed by inverse rod mechanics.</p>
         </li>
         <li>
           <span class="kind">Paper</span>
@@ -922,11 +940,6 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           <p class="by"><span class="me">Y. Jung</span>, S. Jung, S.-i. Lee, W. Kim, H.-Y. Kim</p>
           <p class="where">PNAS 118, e2018509118 (2021) · first author</p>
           <p class="blurb">How swallows and phoebes build strong nests out of incohesive mud granules, using their saliva as a paste.</p>
-        </li>
-        <li>
-          <span class="kind">Co-design · in progress</span>
-          <h3>Arm co-design under noise</h3>
-          <p class="blurb">Link lengths and control co-designed for a noisy planar arm (open loop, feedback and MPC), with the dynamics cross-checked against MuJoCo.</p>
         </li>
       </ul>
     </div>
@@ -966,7 +979,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
             <tr><th scope="row"><a href="#catflip">Cat flip</a></th><td>A gait of one joint</td><td>Half a turn with no angular momentum</td><td>optimization of the gait</td></tr>
             <tr><th scope="row"><a href="#cobra">Cobra</a></th><td>A policy for 15 motors</td><td>Rear the head and hold it up</td><td>reinforcement learning (PPO)</td></tr>
             <tr><th scope="row"><a href="#linking">Rod packing</a></th><td>Where every rod sits and points</td><td>Maximal total linking, no overlap</td><td>energy minimization (FIRE)</td></tr>
-            <tr><th scope="row"><a href="#lattice">Snake lattice</a></th><td>A curvature change per span</td><td>Deploy from flat into a target surface</td><td>fitting on the rod model</td></tr>
+            <tr><th scope="row"><a href="#lattice">Snake lattice</a></th><td>A curvature change per span</td><td>Deploy from flat into a target surface</td><td>Gauss–Newton on the design · Newton's method for each equilibrium</td></tr>
             <tr><th scope="row"><a href="#segment">X-ray scan</a></th><td>A cylinder for every rod</td><td>Account for the rod voxels</td><td>trimmed PCA · direct search</td></tr>
             <tr><th scope="row"><a href="#phd">Plant roots</a></th><td>Root length density with depth</td><td>Most water for the cost of growing</td><td>theory, data, model networks</td></tr>
             <tr><th scope="row">Human lungs</th><td>Diameter reduction per branching</td><td>Most oxygen per unit surface</td><td>theory against anatomy</td></tr>
@@ -984,14 +997,15 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
       <h2>Get in touch</h2>
       <p>Code for the private projects is available on request.</p>
       <div class="email-row">
-        <code id="email">ynsuju@gmail.com</code>
+        <code id="email">jung@seas.harvard.edu</code>
         <ul class="links">
           <li><button type="button" id="copy-email">Copy email</button></li>
-          <li><a href="mailto:ynsuju@gmail.com">Open mail app</a></li>
+          <li><a href="mailto:jung@seas.harvard.edu">Open mail app</a></li>
         </ul>
         <span class="copy-status" id="copy-status" role="status" aria-live="polite"></span>
       </div>
       <ul class="links">
+        <li><a href="https://seas.harvard.edu/person/yeonsu-jung" rel="noopener">Harvard SEAS profile</a></li>
         <li><a href="https://github.com/yeonsu-jung" rel="noopener">github.com/yeonsu-jung</a></li>
         <li><a href="https://scholar.google.com/citations?user=BMZc1CcAAAAJ&amp;hl=en" rel="noopener">Google Scholar</a></li>
         <li><a href="https://yeonsu-jung.github.io" rel="noopener">Full publication list</a></li>
@@ -1000,7 +1014,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     <div class="cv">
       <h3>Positions</h3>
       <ul>
-        <li><span class="yr">2021–</span><span><b>Postdoctoral Fellow</b>, Harvard SEAS (L. Mahadevan)</span></li>
+        <li><span class="yr">2021–</span><span><b>Research Associate</b> (earlier Postdoctoral Fellow), Applied Mathematics, Harvard SEAS (L. Mahadevan)</span></li>
         <li><span class="yr">2020–21</span><span><b>Postdoctoral Fellow</b>, Rowland Institute at Harvard</span></li>
         <li><span class="yr">2019–20</span><span><b>Postdoctoral Fellow</b>, Seoul National University</span></li>
       </ul>
@@ -1021,11 +1035,13 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
   var mq = function (q) { return window.matchMedia && window.matchMedia(q).matches; };
 
-  var LOCAL = location.protocol === 'file:';
   var COARSE = mq('(pointer: coarse)');
   var REDUCE = mq('(prefers-reduced-motion: reduce)');
-  var SAVE = !!(navigator.connection && navigator.connection.saveData);
-  var AUTO_MAX = 8e6;          // bytes: larger pages wait for a click, unless the site is opened from disk
+  var NET = navigator.connection || {};
+  var SAVE = !!NET.saveData;
+  var SLOW = /^(slow-2g|2g|3g)$/.test(NET.effectiveType || '');
+  var HEAVY = 8e6;             // bytes: a larger page waits for a tap on a touch screen or a slow connection
+  var TOUCH = COARSE ? 'tap' : 'click';
   var stages = [];
 
   var ICON = {
@@ -1034,49 +1050,20 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     open: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 3H3v10h10V9.5M9.5 2.5h4v4M13.3 2.7 7.5 8.5"/></svg>'
   };
 
-  function Stage(el) {
+  // One per slide. Every slide is on the page; its viewer runs in an <iframe> inside .screen,
+  // started by scrolling to it.
+  function Stage(slide) {
     var self = this;
-    this.el = el;
-    this.slides = $$('.slide', el);
-    this.i = 0;
-    this.frame = null;
-    this.mode = 'idle';        // idle: poster · passive: running, the page scrolls past · active: takes input
-    this.hash = '';
+    this.el = slide;
+    this.box = slide.querySelector('.frame');      // title bar and screen: what "full screen" fills the window with
+    this.screen = slide.querySelector('.screen');
+    this.view = null;                               // the <iframe>, while the viewer is loaded
+    this.mode = 'idle';        // idle: a picture · passive: running, the page scrolls past · active: takes input
+    this.hash = slide.dataset.hash || '';
+    this.ratio = 0;
     this.tAuto = 0;
     this.tStop = 0;
 
-    // tab bar: one tab per slide, then the tools
-    var bar = document.createElement('div');
-    bar.className = 'tabbar';
-    var tabs = document.createElement('div');
-    tabs.className = 'tabs';
-    tabs.setAttribute('role', 'tablist');
-    tabs.setAttribute('aria-label', el.getAttribute('aria-label') || 'Slides');
-    this.tabs = this.slides.map(function (s, k) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.id = 'tab-' + s.id;
-      b.setAttribute('role', 'tab');
-      b.setAttribute('aria-controls', s.id);
-      b.innerHTML = '<i>' + (k + 1) + '</i>';
-      b.appendChild(document.createTextNode(s.dataset.tab));
-      b.addEventListener('click', function () { self.show(k, true); });
-      s.setAttribute('role', 'tabpanel');
-      s.setAttribute('aria-labelledby', b.id);
-      tabs.appendChild(b);
-      return b;
-    });
-    tabs.addEventListener('keydown', function (e) {
-      var n = self.slides.length, k = self.i;
-      if (e.key === 'ArrowRight') k = (k + 1) % n;
-      else if (e.key === 'ArrowLeft') k = (k + n - 1) % n;
-      else if (e.key === 'Home') k = 0;
-      else if (e.key === 'End') k = n - 1;
-      else return;
-      e.preventDefault();
-      self.show(k, true);
-      self.tabs[k].focus();
-    });
     var tools = document.createElement('div');
     tools.className = 'tools';
     this.state = document.createElement('span');
@@ -1090,57 +1077,60 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     var full = document.createElement('button');
     full.type = 'button';
     full.innerHTML = ICON.full + 'Full screen';
-    full.title = 'Fill the screen with this stage (Esc to leave)';
+    full.title = 'Fill the screen with this viewer (Esc to leave)';
     full.addEventListener('click', function () {
-      if (document.fullscreenElement === el) document.exitFullscreen();
-      else if (el.requestFullscreen) el.requestFullscreen().catch(function () {});
+      if (self.full()) document.exitFullscreen();
+      else self.box.requestFullscreen().catch(function () {});
     });
-    if (!el.requestFullscreen) full.hidden = true;
+    if (!this.box.requestFullscreen) full.hidden = true;
     this.open = document.createElement('a');
     this.open.innerHTML = ICON.open + 'Own tab';
     this.open.title = 'Open this viewer as a page of its own';
     this.open.target = '_blank';
     this.open.rel = 'noopener';
+    this.open.href = this.url(this.hash);
     tools.appendChild(this.state);
     tools.appendChild(restart);
     tools.appendChild(full);
     tools.appendChild(this.open);
-    bar.appendChild(tabs);
-    bar.appendChild(tools);
-    el.insertBefore(bar, el.firstChild);
+    slide.querySelector('.slide-head').appendChild(tools);
 
-    this.slides.forEach(function (s, k) {
-      var screen = s.querySelector('.screen');
-      s.querySelector('.poster').addEventListener('click', function (e) {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;      // let people open it in a tab
+    slide.querySelector('.poster').addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;      // let people open it in a tab
+      e.preventDefault();
+      self.run(true);
+    });
+    var veil = document.createElement('button');
+    veil.type = 'button';
+    veil.className = 'veil';
+    veil.innerHTML = '<span>' + (COARSE ? 'Tap' : 'Click') + ' to interact</span>';
+    veil.addEventListener('click', function () { self.activate(true); });
+    this.screen.appendChild(veil);
+    $$('.presets a', slide).forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
         e.preventDefault();
-        self.run(true);
+        self.run(false, a.dataset.hash);
+        if (self.screen.getBoundingClientRect().top < 60) slide.scrollIntoView({ block: 'start' });
       });
-      var veil = document.createElement('button');
-      veil.type = 'button';
-      veil.className = 'veil';
-      veil.innerHTML = '<span>Click to interact</span>';
-      veil.addEventListener('click', function () { self.activate(true); });
-      screen.appendChild(veil);
-      $$('.presets a', s).forEach(function (a) {
-        a.addEventListener('click', function (e) {
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
-          e.preventDefault();
-          self.run(false, a.dataset.hash);
-          if (screen.getBoundingClientRect().top < 0) screen.scrollIntoView({ block: 'start' });
-        });
-      });
-      self.io.observe(screen);
     });
-
     document.addEventListener('fullscreenchange', function () {
-      if (document.fullscreenElement === el) { if (self.mode === 'idle') self.run(true); else self.activate(true); }
+      if (self.full()) { if (self.mode === 'idle') self.run(true); else self.activate(true); }
     });
-    this.show(0, false);
   }
 
+  Stage.prototype.full = function () { return document.fullscreenElement === this.box; };
 
-  // how much of the current screen is in view: start it, release it, or put it away
+  Stage.prototype.url = function (hash) { return this.el.dataset.src + (hash ? '#' + hash : ''); };
+
+  // A slide starts by itself when it is scrolled to, unless the reader has asked for less motion or
+  // less data, or the page is a large one on a touch screen or a slow connection.
+  Stage.prototype.canAuto = function () {
+    if (REDUCE || SAVE) return false;
+    return !(+this.el.dataset.bytes > HEAVY && (COARSE || SLOW));
+  };
+
+  // how much of the screen is in view: start it, release it, or put it away
   Stage.prototype.seen = function (ratio) {
     var self = this;
     this.ratio = ratio;
@@ -1150,51 +1140,22 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
       if (this.mode === 'idle' && this.canAuto())
         this.tAuto = setTimeout(function () { if (self.mode === 'idle' && self.ratio >= 0.6 && !document.hidden) self.run(false); }, 450);
     } else {
-      if (ratio < 0.5 && this.mode === 'active' && document.fullscreenElement !== this.el) this.activate(false);
+      if (ratio < 0.5 && this.mode === 'active' && !this.full()) this.activate(false);
       if (ratio <= 0.02 && this.mode !== 'idle' && !this.tStop)
-        this.tStop = setTimeout(function () { self.tStop = 0; if (self.ratio <= 0.02 && document.fullscreenElement !== self.el) self.unload(); }, 4000);
+        this.tStop = setTimeout(function () { self.tStop = 0; if (self.ratio <= 0.02 && !self.full()) self.unload(); }, 4000);
       else if (ratio > 0.02) { clearTimeout(this.tStop); this.tStop = 0; }
     }
   };
 
-  Stage.prototype.canAuto = function () {
-    var s = this.slides[this.i];
-    return !REDUCE && !COARSE && !SAVE && (LOCAL || +s.dataset.bytes <= AUTO_MAX);
-  };
-
-  Stage.prototype.url = function (hash) {
-    var s = this.slides[this.i];
-    return s.dataset.src + (hash ? '#' + hash : '');
-  };
-
-  Stage.prototype.show = function (k, byUser) {
-    var wasLive = this.mode !== 'idle';
-    this.unload();
-    this.i = k;
-    this.slides.forEach(function (s, j) { s.hidden = j !== k; });
-    this.tabs.forEach(function (t, j) {
-      t.setAttribute('aria-selected', j === k ? 'true' : 'false');
-      t.tabIndex = j === k ? 0 : -1;
-    });
-    this.hash = this.slides[k].dataset.hash || '';
-    this.open.href = this.url(this.hash);
-    this.mark();
-    if (byUser) {
-      try { history.replaceState(null, '', '#' + this.slides[k].id); } catch (err) {}
-      var heavy = !LOCAL && +this.slides[k].dataset.bytes > AUTO_MAX;      // a large page waits for its own click
-      if (!heavy && (wasLive || this.canAuto())) this.run(false);
-    }
-  };
-
   Stage.prototype.run = function (active, hash) {
-    var self = this, s = this.slides[this.i], screen = s.querySelector('.screen');
+    var self = this, slide = this.el, screen = this.screen;
     this.unload();
-    this.hash = hash == null ? (s.dataset.hash || '') : hash;
+    this.hash = hash == null ? (slide.dataset.hash || '') : hash;
     var f = document.createElement('iframe');
-    f.title = s.dataset.tab + ': interactive viewer';
+    f.title = slide.dataset.name + ': interactive viewer';
     f.setAttribute('allow', 'fullscreen');
     f.addEventListener('load', function () {
-      if (self.frame !== f) return;
+      if (self.view !== f) return;
       screen.classList.add('is-loaded');
       if (self.mode === 'passive') {             // show the hint once, then leave it to hover
         screen.classList.add('hint');
@@ -1206,7 +1167,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     f.src = this.url(this.hash);
     screen.appendChild(f);
     screen.classList.add('is-live');
-    this.frame = f;
+    this.view = f;
     this.open.href = f.src;
     this.mode = active ? 'active' : 'passive';
     screen.classList.toggle('is-active', !!active);
@@ -1216,72 +1177,60 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
 
   Stage.prototype.activate = function (on) {
     if (this.mode === 'idle') return;
-    var screen = this.slides[this.i].querySelector('.screen');
     this.mode = on ? 'active' : 'passive';
-    screen.classList.toggle('is-active', on);
-    if (on && this.frame) this.frame.focus({ preventScroll: true });
+    this.screen.classList.toggle('is-active', on);
+    if (on && this.view) this.view.focus({ preventScroll: true });
     this.say();
   };
 
   Stage.prototype.unload = function () {
     clearTimeout(this.tAuto);
     clearTimeout(this.tStop); this.tStop = 0;
-    this.slides.forEach(function (s) {
-      var screen = s.querySelector('.screen'), f = screen.querySelector('iframe');
-      if (f) f.remove();
-      screen.classList.remove('is-live', 'is-loaded', 'is-active', 'hint');
-    });
-    this.frame = null;
+    if (this.view) this.view.remove();
+    this.screen.classList.remove('is-live', 'is-loaded', 'is-active', 'hint');
+    this.view = null;
     this.mode = 'idle';
+    this.mark();
     this.say();
   };
 
   Stage.prototype.say = function (what) {
     this.state.textContent = what === 'loading' ? 'Loading…'
-      : this.mode === 'active' ? 'Interactive · click outside to release'
-      : this.mode === 'passive' ? (this.slides[this.i].dataset.kind === 'app' ? 'Playing · click the view to interact' : 'Click the view to interact') : '';
+      : this.mode === 'active' ? 'Interactive · ' + TOUCH + ' outside to release'
+      : this.mode === 'passive' ? (this.el.dataset.kind === 'app' ? 'Playing · ' + TOUCH : (COARSE ? 'Tap' : 'Click')) + ' the view to interact' : '';
   };
 
   Stage.prototype.mark = function () {
     var hash = this.hash, live = this.mode !== 'idle';
-    $$('.presets a', this.slides[this.i]).forEach(function (a) {
+    $$('.presets a', this.el).forEach(function (a) {
       if (live && a.dataset.hash === hash) a.setAttribute('aria-current', 'true');
       else a.removeAttribute('aria-current');
     });
   };
 
   if ('IntersectionObserver' in window) {
-    Stage.prototype.io = new IntersectionObserver(function (entries) {
+    var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        var st = stages.filter(function (s) { return s.el.contains(e.target); })[0];
-        if (st && st.slides[st.i].contains(e.target)) st.seen(e.intersectionRatio);
+        stages.forEach(function (st) { if (st.screen === e.target) st.seen(e.intersectionRatio); });
       });
     }, { threshold: [0, 0.02, 0.5, 0.6, 1] });
-    $$('[data-stage]').forEach(function (el) { stages.push(new Stage(el)); });
+    $$('.slide').forEach(function (slide) {
+      var st = new Stage(slide);
+      stages.push(st);
+      io.observe(st.screen);
+    });
 
     // a click anywhere outside a viewer hands the wheel back to the page
     document.addEventListener('pointerdown', function (e) {
       stages.forEach(function (st) {
-        if (st.mode !== 'active' || document.fullscreenElement === st.el) return;
-        var screen = st.slides[st.i].querySelector('.screen');
-        if (!screen.contains(e.target)) st.activate(false);
+        if (st.mode === 'active' && !st.full() && !st.screen.contains(e.target)) st.activate(false);
       });
     });
 
-    // #whip, #catflip, ... select that slide
-    var route = function () {
-      var id = decodeURIComponent(location.hash.slice(1));
-      if (!id) return;
-      stages.forEach(function (st) {
-        st.slides.forEach(function (s, k) {
-          if (s.id !== id) return;
-          if (st.i !== k) st.show(k, false);
-          st.el.scrollIntoView({ block: 'start' });
-        });
-      });
-    };
-    window.addEventListener('hashchange', route);
-    route();
+    // back from another tab: start what is in view
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) stages.forEach(function (st) { if (st.mode === 'idle') st.seen(st.ratio); });
+    });
   } else {
     document.documentElement.className = 'no-js';
   }

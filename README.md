@@ -229,9 +229,12 @@ checked that evening unless it says "not verified".
 ### `index.html`
 
 Hand-written, not generated: edit it directly. Its seven sections are the
-seven items of `plan.md`, in that order. It holds no simulation data. Sections
-1 to 4 each have a "stage" whose tabs are the viewer pages of that section,
-one `<article class="slide">` per page:
+seven items of `plan.md`, in that order. It holds no simulation data. In
+sections 1 to 4 every viewer page has a slide of its own, an
+`<article class="slide">`, one below the other: a title bar, the screen the
+viewer runs in, and a caption. Nothing is behind a tab. (Until late on
+2026-10-08 the slides of a section shared one screen, with tabs. Yeonsu asked
+for every viewer to be reached by scrolling, not by clicking.)
 
 | Section | Slide (`#id`) | Page |
 |---|---|---|
@@ -240,17 +243,17 @@ one `<article class="slide">` per page:
 | 3 Snake lattices | `#lattice` | `index_lattice.html` |
 | 4 X-ray reconstruction | `#scan`, `#segment` | `index_xray_stack.html`, `index_xray_segment.html` |
 
-- **How a slide runs.** The page is loaded in an `<iframe>` when its slide
-  comes into view, and removed a few seconds after it leaves, so that as a
-  rule one viewer runs at a time. A running viewer does not take the mouse
-  until it is clicked, so the page scrolls past it; a click outside gives the
-  wheel back.
-  A slide waits for a click instead of starting by itself on a touch screen,
-  when the browser asks for reduced motion or data saving, and, when the site
-  is served over http, for a page over 8 MB (only `index_entangle.html`);
-  opened from disk, the size does not matter. "Full screen" keeps the tabs,
-  so a stage can be presented from. Without JavaScript every slide is shown as
-  a picture that links to its page.
+- **How a slide runs.** Its page is loaded in an `<iframe>` when the slide is
+  scrolled to (six tenths of its screen in view for half a second), and
+  removed a few seconds after it has left the window, so that as a rule one or
+  two viewers run at a time. A running viewer does not take the mouse or the
+  finger until it is clicked or tapped, so the page scrolls past it; a click
+  outside gives the wheel back. A slide waits for a click on its picture
+  instead of starting by itself when the browser asks for reduced motion or
+  for data saving, and, on a touch screen or a connection the browser calls
+  2G or 3G, when its page is over 8 MB (only `index_entangle.html`). "Full
+  screen" fills the window with one viewer and its title bar. Without
+  JavaScript every slide is shown as a picture that links to its page.
 - **"Views to try"** under a slide are links into the replay viewers' own URL
   hash (`run`, `run2`, `metric`, `color`, the toggles). Nothing was added to
   the viewers for this, and their files are unchanged (the five checksums
@@ -262,16 +265,26 @@ one `<article class="slide">` per page:
   `10.1073/pnas.2417161122`, `10.1073/pnas.2018509118` and
   `10.1371/journal.pone.0204191`; the arXiv number of the PRL manuscript was
   checked at arxiv.org. One-line descriptions of papers paraphrase their
-  abstracts. The name, position, education, GitHub link, e-mail address and
-  the text of four "Miscellaneous" cards come from the earlier portfolio,
+  abstracts. The title (Research Associate), the affiliation (Applied
+  Mathematics, Harvard SEAS), the profile link and the e-mail address
+  (`jung@seas.harvard.edu`) are as Yeonsu gave them on 2026-10-08, and
+  `https://seas.harvard.edu/person/yeonsu-jung` says the same. The education,
+  the earlier positions, the GitHub link and the text of the two
+  "Miscellaneous" cards with clips come from the earlier portfolio,
   `~/Documents/job-applications/robotics/portfolio/index.html` (September
-  2026); the Google Scholar link is the one on
+  2026), which gave "Postdoctoral Fellow" for 2021 onwards; when the title
+  changed is not verified. The Google Scholar link is the one on
   `https://yeonsu-jung.github.io`. The tags "PDE-constrained optimization" and
   "differentiable simulation" on the whip and the cat flip are `plan.md`'s
-  words.
+  words. The methods named for the snake lattice were read from
+  `shape-morphing-solver` on the Lenovo: `solvers.py` ("LM-damped sparse
+  Newton"), `branch_solver.py` (relaxation "with negative-curvature escape and
+  stability checks") and `rod_design.py` ("Implicit Gauss-Newton/LM design
+  refinement").
 - **Chosen by me, not by `plan.md`:** which pages stand for items 3 and 4
-  (below), every card of "Miscellaneous" (item 6 says only "Suggest ?"), and
-  the table at the end of "The thread".
+  (below), the cards of "Miscellaneous" (item 6 says only "Suggest ?"; of my
+  six, Yeonsu took out two as too far from the rest), and the table at the
+  end of "The thread".
 
 ### Four more pages
 
@@ -282,24 +295,25 @@ Byte-for-byte copies, like the five above; do not edit them by hand.
 | `index_lattice.html` | Two-Level Lattice Viewer | `results/two-level-viewer.html` in `~/Github/shape-morphing-solver` on the Lenovo (`ssh lenovo`) |
 | `index_xray_stack.html` | Whole-Stack Rod Viewer | `viewer/whole-stack-viewer.local.html` in `~/GitHub/cylinder-matching` on the laptop |
 | `index_xray_segment.html` | Rod Segmentation Viewer | `viewer/rod-segmentation-viewer.local.html` in the same repository |
-| `index_entangle_opt.html` | Entangling 15 Rods | the page of `https://claude.ai/artifact/LfqgxXj4bTx6JsFSfZXv7r`, version `1791474643-5387` |
+| `index_entangle_opt.html` | Entangling 15 Long Rods | `study/entangling_15_long_rods.html` in `~/GitHub/entanglement-optimization-combined/entanglement-optimization-cpp` on the laptop |
 
 ```
-904c5a9d94d5f1dedd65ec816391c79690f7bd00155d3b3f62580b10f86f7d57  index_lattice.html
+17d339f086abaa975040b83b7b829c145ed653b0368f05e48912c616ce661cd0  index_lattice.html
 601c6be7ce5e40319ba3a3aeea1b5e964844113197a835f849021c847efa16b4  index_xray_stack.html
 f294ecb306ddf9b15d30a38769ee1c312873a6288dfb58939d0557c628d7db0b  index_xray_segment.html
-f6cf403fe78577acb26f0c93b1a5ae72afb77473199b6b8f4a88427582f802e1  index_entangle_opt.html
+2fd2c0b05dd82dbd8bf6e6a217f80753c411ea292a92d167e77519b84245bdb9  index_entangle_opt.html
 ```
 
 - **`index_lattice.html` is a snapshot of work in progress.** Its generator is
   `results/scratch/two_level_viewer.py` with the template
   `results/scratch/two_level_viewer_template.html`; `/results/` is in that
   repository's `.gitignore`, so neither they nor the page are in git. This
-  copy is the page written at 19:02, with the repository at `06895b7`
+  copy is the page written at 19:47, with the repository at `06895b7`
   ("Crossing springs: follow each corner path, restoring four-fold symmetry
-  and twist stiffness") plus uncommitted changes. The page was rewritten
-  between 18:16 and 19:02 while I worked, so it may have moved on again. To
-  take the current one:
+  and twist stiffness") plus uncommitted changes. The page was rewritten at
+  18:16, 19:02 and 19:47 while I worked (the three builds have the same
+  wording but for one sentence, and each is larger than the last), so it may
+  have moved on again. To take the current one:
 
   ```
   scp lenovo:Github/shape-morphing-solver/results/two-level-viewer.html ~/Documents/portfolio/index_lattice.html
@@ -358,20 +372,20 @@ f6cf403fe78577acb26f0c93b1a5ae72afb77473199b6b8f4a88427582f802e1  index_entangle
   - Left out: `viewer/alpha100-series-viewer` (every scan of the 2025-09-09
     Alpha100 series; 39.8 MB with its data inline) and
     `viewer/whole-stack-viewer-alpha100_free`.
-- **`index_entangle_opt.html`** was saved through Claude Code's Artifact tool
-  (`action: read`, `path: index.html`), which gives the page as published
-  (its version number, read as a Unix time, is 2026-10-08 11:50). Its own
-  text says it is a fresh run of
-  `entanglement_optimization` "with the settings of
-  `movie_N15_L2_Rad0.1.mp4`". **Not verified:** its generator. A search for
-  its title under `~/Documents`, `~/Downloads` and `~/Github` on the desktop
-  and the Lenovo, and under `~/GitHub` and in Spotlight on the laptop, found
-  no file. What the laptop does have, committed five minutes later, is its
-  sibling `study/entangling_15_long_rods.html` in
-  `~/GitHub/entanglement-optimization-combined/entanglement-optimization-cpp`
-  (`f52618c`): the same page for rods three times longer, run until the
-  solver stops by itself, a complete document with no link to claude.ai. It is
-  not on the landing page, because `plan.md` names the other one.
+- **`index_entangle_opt.html`** is the page committed at `f52618c`
+  (2026-10-08 11:55, "Add interactive HTML playback of 15 long rods
+  entangling") in the laptop's `entanglement-optimization-cpp`, whose `main`
+  was level with `origin/main` at
+  `github.com/yeonsu-jung/entanglement-optimization-cpp` when I looked: the
+  page is in git and on the remote. Its own text says the run "was made for
+  this page with `entanglement_optimization`, built from the current source in
+  Release mode", and gives the command (15 rods, length 6, radius 0.1,
+  stopping by itself). **Not verified:** the run, and how the page was written
+  from it; the commit holds the page only, no script.
+  Until late on 2026-10-08 this file was the page of
+  `https://claude.ai/artifact/LfqgxXj4bTx6JsFSfZXv7r` ("Entangling 15 Rods",
+  the link in `plan.md` item 2.3), for which I found no file on any of the
+  three machines. Yeonsu chose the long rods instead.
 - The two X-ray pages load three.js r128 from `cdnjs.cloudflare.com` and its
   OrbitControls from `cdn.jsdelivr.net`; the rod page loads three.js r128
   only. All four load IBM Plex from Google Fonts, and so does `index.html`.
@@ -393,24 +407,28 @@ f6cf403fe78577acb26f0c93b1a5ae72afb77473199b6b8f4a88427582f802e1  index_entangle
   `data-shot` in `index.html` (a viewer URL hash: run, time, camera), with the
   panels hidden. For the other four it is the element named in `PAGES` at the
   top of the tool, once light and once dark (`<slide>-dark.webp`).
-- `node tools/site.mjs check` (63 s here) opens `index.html` in headless
+- `node tools/site.mjs check` (86 s here) opens `index.html` in headless
   Chrome and does three things. It compares each page's size with the
   `data-bytes` on its slide and looks for missing pictures and dead links
   within the page. It runs every slide and every "view to try" (30 in all) and
   asks the viewer inside each frame which run, plot, colouring and switches it
-  shows. Then it tries the page's own behaviour by wheel, click and key: a
-  viewer in view starts by itself; the wheel over it scrolls the page; after a
-  click the wheel goes to the viewer; a click outside gives it back; tabs and
-  the arrow keys on them; full screen; the page with scripts off; and, served
-  from `http://127.0.0.1`, the 8 MB rule. Last result: all good, nothing on
-  the console. It does not look at the pictures.
+  shows. Then it tries the page's own behaviour (18 checks): every viewer has
+  its place on the page; one scrolled to starts by itself; the wheel over it
+  scrolls the page; after a click the wheel goes to the viewer; a click
+  outside gives it back; scrolling on starts the next and puts the last away;
+  full screen; the page with scripts off; the 21 MB page starting by itself
+  when served from `http://127.0.0.1`; on an emulated touch screen, the same
+  by swipe and tap, and the 21 MB page waiting for a tap; and nothing
+  starting by itself for a reader who asks for reduced motion. Last result:
+  all good, nothing on the console. It does not look at the pictures.
 - The tool needs Node 22 or later and `google-chrome`; nothing is installed.
   Chrome runs headless with software WebGL and still fetches three.js from the
   CDNs.
 - Looked at by eye, as screenshots from headless Chrome: 1440 × 900 light and
-  dark, 390 × 844 dark. **Not verified:** Firefox, Safari, a real phone, a
-  real GPU (everything was drawn by software), and the viewers' own controls
-  inside the frames beyond what `check` asks them.
+  dark, 390 × 844 dark. The touch screen is Chrome's emulation of one. **Not
+  verified:** Firefox, Safari, a real phone, a real GPU (everything was drawn
+  by software), and the viewers' own controls inside the frames beyond what
+  `check` asks them.
 - `media/snake.*` and `media/flagellar.*` are copies of the files of the same
   names in `~/Documents/job-applications/robotics/portfolio/media/`. Where
   those were rendered: not verified.
@@ -443,15 +461,14 @@ which view no longer shows the run it asks for. The numbers in the captions of
 6. `plan.md` item 2.2 still names `media/tentacle_grasp_viewer.html`, the
    scrolling viewer of loose end 4, which no longer exists. The landing page
    uses `index_tentacle.html`.
-7. `index_entangle_opt.html` links to its thin-rod companion at
-   `https://claude.ai/artifact/12ZwGFfcB3PKWmJVxNofPA`, a private artifact:
-   the link is dead for anyone but Yeonsu. Fixing it means rebuilding the page
-   from its generator, which I did not find.
+7. (Closed 2026-10-08.) The 15-rod page linked to a private artifact; the
+   long-rods page that replaced it has no such link.
 8. The four added pages do not look or behave like the five replay viewers
    (documents that scroll, other controls, light by default). Making them
    match means rebuilding each from its generator.
 9. `index_lattice.html` follows work that was still changing on 2026-10-08
-   (see above); `index_entangle_opt.html` has no generator on record here.
+   (see above); for `index_entangle_opt.html` the page is in git but the
+   script that wrote it is not on record.
 10. The site is not published. Since late on 2026-10-08 this folder is a git
     repository, pushed at Yeonsu's request to
     `https://github.com/yeonsu-jung/portfolio`, which I created **private**
@@ -461,9 +478,9 @@ which view no longer shows the run it asks for. The numbers in the captions of
     `https://yeonsu-jung.github.io`. Before making the repository public or
     turning Pages on, Yeonsu should decide whether the X-ray scan (the e01
     stack of `rod-packing-hysteresis`, files from July 2025) and the lattice
-    work may be shown, whether the e-mail address on the page is the one
-    wanted, and whether `README.md` and `plan.md`, which name machines, local
-    paths and private artifacts, should go public with the rest.
+    work may be shown, and whether `README.md` and `plan.md`, which name
+    machines, local paths and private artifacts, should go public with the
+    rest.
 11. `plan.md` items 3 and 4 name sources I could not use as given. For item
     3, the only pages under `~/Github/shape-morphing-solver/results` on the
     Lenovo are the two named above, both about the inverse-design work of
@@ -472,6 +489,10 @@ which view no longer shows the run it asks for. The numbers in the captions of
     `snake_lattice_params.yml`), which has no page; whether it is the paper's
     simulation code is not verified. For item 4 the laptop could not be
     reached until 22:27; what it holds is under "The two X-ray pages" above.
-12. `~/GitHub/cylinder-matching` on the laptop has no git remote, and the
+12. `plan.md` no longer matches the page in three places, each by Yeonsu's
+    word on 2026-10-08: item 2.3 names the 15-rod artifact (the page shows
+    the long rods), "Slide 1, 2, 3" are slides one below the other and not
+    tabs, and item 6 has four cards.
+13. `~/GitHub/cylinder-matching` on the laptop has no git remote, and the
     pages built from it are not in git: the laptop holds the only copy of the
     pipeline, and this folder the only other copy of the two pages.
