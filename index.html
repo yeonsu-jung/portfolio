@@ -12,7 +12,7 @@
 <script>document.documentElement.className = 'js';</script>
 <style>
 /* The landing page of the portfolio. Hand-written (not generated): the viewers it embeds are
-   the index_*.html files next to it, each a self-contained page. See README.md. */
+   the index_*.html files next to it, each a self-contained page. */
 :root {
   color-scheme: light dark;
   --bg: #f3f4f6;
@@ -212,6 +212,8 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .seen .shot { border-radius: 8px; overflow: hidden; background: #000; border: 1px solid var(--rule); }
 .seen .movie { aspect-ratio: 776 / 720; }          /* the picture is the middle 774 columns of a 1280 x 720 frame; the rest is black */
 .seen .photo { aspect-ratio: 1583 / 2846; }
+.seen.one .tiles { grid-template-columns: minmax(0, 1fr); max-width: 440px; }
+.seen .tall { aspect-ratio: 960 / 1080; }          /* the picture is the middle half of a 1920 x 1080 frame */
 .seen video, .seen img { width: 100%; height: 100%; object-fit: cover; }
 .seen figcaption { margin-top: 10px; font-size: var(--fs-small); line-height: 1.5; color: var(--ink-2); max-width: 46em; }
 .seen figcaption b { color: var(--ink); font-weight: 600; }
@@ -383,6 +385,10 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .presets a[aria-current="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .presets a[aria-current="true"]::before { border-left-color: var(--accent); }
 
+.side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.side figure figcaption { margin-top: 8px; font-size: var(--fs-small); line-height: 1.45; color: var(--ink-2); }
+.side figure figcaption b { color: var(--ink); font-weight: 600; }
+.about.wide-side { grid-template-columns: minmax(0, 1fr) 400px; }
 .spec { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 15px 17px 6px; font-size: var(--fs-small); line-height: 1.45; }
 .spec dt { font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); padding-top: 10px; border-top: 1px solid var(--rule); }
 .spec dt:first-of-type { border-top: 0; padding-top: 0; }
@@ -444,7 +450,8 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
   .section-head.split { grid-template-columns: minmax(0, 1fr); }
   .seen { max-width: 640px; }
-  .about { grid-template-columns: minmax(0, 1fr); }
+  .about, .about.wide-side { grid-template-columns: minmax(0, 1fr); }
+  .side figure { max-width: 520px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .contact-grid { grid-template-columns: minmax(0, 1fr); }
 }
@@ -721,7 +728,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
               </a>
             </div>
           </div>
-          <div class="about">
+          <div class="about wide-side">
             <div>
               <ul class="tags"><li>stochastic grasping</li><li>contact</li></ul>
               <p>Twelve pneumatic filaments hang from a hub: the entanglement gripper of Becker et al. Each is simulated here, with the rod model of section 1, as a chain of 40 elastic links whose natural curvature rises with the pressure. Lowered around a 65 mm foam ball and pressurized, they curl and tangle, and the hub lifts.</p>
@@ -738,10 +745,16 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
                 </ul>
               </div>
             </div>
-            <dl class="spec">
-              <dt>Paper</dt><dd>K. Becker, C. Teeple, N. Charles, <span class="me">Y. Jung</span>, D. Baum, J. C. Weaver, L. Mahadevan, R. Wood. <a href="https://doi.org/10.1073/pnas.2209819119" rel="noopener">Active entanglement enables stochastic, topological grasping</a>.<small>PNAS 119, e2209819119 (2022)</small></dd>
-              <dt>Shown</dt><dd>5 runs · 12 filaments of 40 links, 300 mm · a 65 mm, 2.75 g ball</dd>
-            </dl>
+            <div class="side">
+              <figure>
+                <div class="clip"><video muted loop playsinline controls preload="none" data-bytes="11497606" poster="media/filament_robot_grasp.jpg" width="1920" height="1080" aria-label="A robot arm lowers a bundle of thin orange filaments over a small object on a stand. The filaments curl and tangle around it, and the arm lifts it."><source src="media/filament_robot_grasp.mp4" type="video/mp4"></video></div>
+                <figcaption><b>The gripper itself,</b> at real speed: lowered over an object, the filaments curl around it and around one another, and the arm lifts.</figcaption>
+              </figure>
+              <dl class="spec">
+                <dt>Paper</dt><dd>K. Becker, C. Teeple, N. Charles, <span class="me">Y. Jung</span>, D. Baum, J. C. Weaver, L. Mahadevan, R. Wood. <a href="https://doi.org/10.1073/pnas.2209819119" rel="noopener">Active entanglement enables stochastic, topological grasping</a>.<small>PNAS 119, e2209819119 (2022)</small></dd>
+                <dt>Shown</dt><dd>5 runs · 12 filaments of 40 links, 300 mm · a 65 mm, 2.75 g ball</dd>
+              </dl>
+            </div>
           </div>
         </article>
 
@@ -777,11 +790,19 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   <!-- ================= 3 · LATTICES ================= -->
   <section class="block" id="lattices" aria-labelledby="lattices-h">
     <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow"><b>03</b> · Out of plane</p>
-        <h2 id="lattices-h">Shape-morphing snake lattices</h2>
-        <p>A lattice of sinusoidal filaments, joined where they cross, lies flat. Change the natural curvature of each span, so that some extend and others contract, and the closed loops can no longer stay in the plane: the sheet rises into a dome or a saddle.</p>
-        <p>In the paper, discrete elastic rod simulations predict the shapes that the printed lattices take when heated. The viewer is the problem that follows, and it is still open: choosing the change span by span so that a flat lattice deploys into a surface asked for in advance.</p>
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow"><b>03</b> · Out of plane</p>
+          <h2 id="lattices-h">Shape-morphing snake lattices</h2>
+          <p>A lattice of sinusoidal filaments, joined where they cross, lies flat. Change the natural curvature of each span, so that some extend and others contract, and the closed loops can no longer stay in the plane: the sheet rises into a dome or a saddle.</p>
+          <p>In the paper, discrete elastic rod simulations predict the shapes that the printed lattices take when heated. The viewer is the problem that follows, and it is still open: choosing the change span by span so that a flat lattice deploys into a surface asked for in advance.</p>
+        </div>
+        <figure class="seen one">
+          <div class="tiles">
+            <div class="shot tall"><video muted loop playsinline controls preload="none" data-bytes="26992564" poster="media/mustafa-jackson-experiment.jpg" width="1920" height="1080" aria-label="Two printed lattices of wavy filaments, each seen from above and from the side. The first rises from flat into a dome, the second into a saddle."><source src="media/mustafa-jackson-experiment.mp4" type="video/mp4"></video></div>
+          </div>
+          <figcaption><b>The experiment.</b> Two printed lattices at real speed, each from above and from the side: one rises from flat into a dome, the other into a saddle. Scale bars 25 mm. Experiment by Mustafa Abdelrahman and Jackson Wilt.</figcaption>
+        </figure>
       </div>
 
       <div class="slides">
@@ -1256,9 +1277,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     document.documentElement.className = 'no-js';
   }
 
-  // clips: play while in view
+  // clips: play while in view; a large one waits for a tap where a large viewer would
   var videos = $$('video');
-  if (!REDUCE && 'IntersectionObserver' in window) {
+  if (!REDUCE && !SAVE && 'IntersectionObserver' in window) {
     var vio = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         var v = e.target;
@@ -1266,7 +1287,10 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         else if (!v.paused) v.pause();
       });
     }, { threshold: 0.4 });
-    videos.forEach(function (v) { v.muted = true; vio.observe(v); });
+    videos.forEach(function (v) {
+      v.muted = true;
+      if (!(+v.dataset.bytes > HEAVY && (COARSE || SLOW))) vio.observe(v);
+    });
   }
 
   // which section is in view, for the top bar
