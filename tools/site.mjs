@@ -383,7 +383,7 @@ async function behaviour(b, fail, file, published) {
     await p.goto(published ? file + '#packing' : `http://127.0.0.1:${server.address().port}/index.html#packing`);
     await p.until(loaded('packing'), 60000);
     t = await p.eval(slide('packing'));
-    expect('the largest page (21 MB) starts by itself as well', t.frames.join() === 'index_entangle.html#run=AR025-entangle' && !t.active, t);
+    expect('the largest page starts by itself as well', t.frames.join() === 'index_entangle.html#run=AR025-entangle' && !t.active, t);
     for (const line of p.logs) fail('index.html over http: ' + line);
     await p.close();
   } finally { server.close(); server.closeAllConnections(); }
@@ -406,7 +406,7 @@ async function behaviour(b, fail, file, published) {
   expect('and then a swipe goes to the viewer', Math.abs(t.y - s.y) < 5, [s.y, t.y]);
   await p.eval(go('packing')); await sleep(3500);
   t = await p.eval(slide('packing'));
-  expect('the 21 MB page waits for a tap', !t.frames.some(f => f.startsWith('index_entangle.html')), t);
+  expect('the largest page waits for a tap', !t.frames.some(f => f.startsWith('index_entangle.html')), t);
   await p.eval(`document.querySelector('#packing .poster').click()`);
   await p.until(loaded('packing'), 60000);
   t = await p.eval(slide('packing'));
