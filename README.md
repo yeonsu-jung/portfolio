@@ -432,6 +432,34 @@ f294ecb306ddf9b15d30a38769ee1c312873a6288dfb58939d0557c628d7db0b  index_xray_seg
 - `media/snake.*` and `media/flagellar.*` are copies of the files of the same
   names in `~/Documents/job-applications/robotics/portfolio/media/`. Where
   those were rendered: not verified.
+- `media/tangle.png` (a photograph, 1583 × 2846) and
+  `media/SV01_EntanglementByBoundaryInjection_FAST.mp4` (H.264, 1280 × 720,
+  10.8 s, with sound; its container is dated 2026-09-23) were put into this
+  folder by Yeonsu on 2026-10-08, at 22:58 and 23:15, to go beside the head of
+  section 2. Neither file was changed.
+
+  ```
+  92c2ca5c6e1e69cbf725e6045177745586e4672a0eb4c5d3f393341dc59bc906  media/tangle.png
+  4e74bc05a2a28b3354d10ae70ab23aa13f55d6062a134aebaf25582f2b4aad0d  media/SV01_EntanglementByBoundaryInjection_FAST.mp4
+  ```
+
+  The page shows `media/tangle.webp` (900 px wide) and uses
+  `media/SV01_EntanglementByBoundaryInjection_FAST.jpg`, the frame at 9.2 s,
+  as the movie's still. Both are **generated**:
+
+  ```
+  ffmpeg -ss 9.2 -i media/SV01_EntanglementByBoundaryInjection_FAST.mp4 -frames:v 1 -q:v 3 media/SV01_EntanglementByBoundaryInjection_FAST.jpg
+  python3 -c "from PIL import Image; im = Image.open('media/tangle.png'); im.convert('RGB').resize((900, round(im.height * 900 / im.width)), Image.LANCZOS).save('media/tangle.webp', 'WEBP', quality=82, method=6)"
+  ```
+
+  The movie's picture is columns 251 to 1024 of its frame and the rest is
+  black; the page cuts the black away with CSS and starts it muted.
+  The caption says what the movie shows and what its own labels say (aspect
+  ratios 200 and 38, the mesh "to prevent pre-entangled rods"; its clock runs
+  past 830 s). **Not verified:** where and when the movie and the photograph
+  were taken, which paper they belong to ("SV01" reads like a first
+  supplementary video), and that the photograph shows the tangle of the
+  movie; the caption says "such a tangle".
 
 ### When a page is rebuilt
 

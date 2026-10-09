@@ -206,6 +206,16 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .section-head .paper { font-size: var(--fs-small); color: var(--ink-3); }
 .section-head .paper b { color: var(--ink-2); font-weight: 500; }
 
+/* a section head with something to look at beside it: a movie and a photograph, at one height */
+.section-head.split { max-width: none; display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr); gap: 28px 52px; align-items: start; }
+.seen .tiles { display: grid; grid-template-columns: minmax(0, 1.0778fr) minmax(0, 0.5562fr); gap: 10px; }
+.seen .shot { border-radius: 8px; overflow: hidden; background: #000; border: 1px solid var(--rule); }
+.seen .movie { aspect-ratio: 776 / 720; }          /* the picture is the middle 774 columns of a 1280 x 720 frame; the rest is black */
+.seen .photo { aspect-ratio: 1583 / 2846; }
+.seen video, .seen img { width: 100%; height: 100%; object-fit: cover; }
+.seen figcaption { margin-top: 10px; font-size: var(--fs-small); line-height: 1.5; color: var(--ink-2); max-width: 46em; }
+.seen figcaption b { color: var(--ink); font-weight: 600; }
+
 /* ---------- a slide: title bar, screen, caption. Every slide is on the page; nothing is behind a tab ---------- */
 .slide { scroll-margin-top: 14px; }
 .slide + .slide { margin-top: 88px; }
@@ -432,6 +442,8 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
 /* ---------- responsive ---------- */
 @media (max-width: 1040px) {
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+  .section-head.split { grid-template-columns: minmax(0, 1fr); }
+  .seen { max-width: 640px; }
   .about { grid-template-columns: minmax(0, 1fr); }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .contact-grid { grid-template-columns: minmax(0, 1fr); }
@@ -646,10 +658,19 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   <!-- ================= 2 · MANY-BODY ================= -->
   <section class="block" id="many-body" aria-labelledby="many-h">
     <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow"><b>02</b> · Many bodies in contact</p>
-        <h2 id="many-h">Many-body simulations: entangled rods and filaments</h2>
-        <p>Many thin bodies can hold together, or hold an object, with no single strong contact. What matters is collective: how they wind around and cage one another. Three views of that: a packing as it entangles, a gripper that grasps by tangling, and entanglement made into the objective.</p>
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow"><b>02</b> · Many bodies in contact</p>
+          <h2 id="many-h">Many-body simulations: entangled rods and filaments</h2>
+          <p>Many thin bodies can hold together, or hold an object, with no single strong contact. What matters is collective: how they wind around and cage one another. Three views of that: a packing as it entangles, a gripper that grasps by tangling, and entanglement made into the objective.</p>
+        </div>
+        <figure class="seen">
+          <div class="tiles">
+            <div class="shot movie"><video muted loop playsinline controls preload="none" poster="media/SV01_EntanglementByBoundaryInjection_FAST.jpg" width="1280" height="720" aria-label="Two beakers side by side, with rods dropped into each through a mesh. On the left, long thin rods form a tangle that comes out together when one rod is lifted. On the right, shorter rods stay a pile at the bottom."><source src="media/SV01_EntanglementByBoundaryInjection_FAST.mp4" type="video/mp4"></video></div>
+            <div class="shot photo"><img src="media/tangle.webp" width="900" height="1618" alt="A ball of tangled thin rods hanging from a single rod held in a gloved hand." loading="lazy" decoding="async"></div>
+          </div>
+          <figcaption><b>In the laboratory.</b> Rods are dropped through a mesh into a beaker; the mesh keeps them from arriving already tangled. The long ones, aspect ratio 200, come out together when a single rod is lifted. The shorter ones, aspect ratio 38, stay a pile. The movie is sped up. Right: such a tangle, hanging from one rod.</figcaption>
+        </figure>
       </div>
 
       <div class="slides">
