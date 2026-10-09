@@ -213,7 +213,7 @@ section.block { padding-block: 68px; border-top: 1px solid var(--rule); }
 .seen .movie { aspect-ratio: 776 / 720; }          /* the picture is the middle 774 columns of a 1280 x 720 frame; the rest is black */
 .seen .photo { aspect-ratio: 1583 / 2846; }
 .seen.one .tiles { grid-template-columns: minmax(0, 1fr); max-width: 440px; }
-.seen .tall { aspect-ratio: 960 / 1080; }          /* the picture is the middle half of a 1920 x 1080 frame */
+.seen .tall { aspect-ratio: 960 / 1080; }
 .seen video, .seen img { width: 100%; height: 100%; object-fit: cover; }
 .seen figcaption { margin-top: 10px; font-size: var(--fs-small); line-height: 1.5; color: var(--ink-2); max-width: 46em; }
 .seen figcaption b { color: var(--ink); font-weight: 600; }
@@ -747,8 +747,8 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
             </div>
             <div class="side">
               <figure>
-                <div class="clip"><video muted loop playsinline controls preload="none" data-bytes="11497606" poster="media/filament_robot_grasp.jpg" width="1920" height="1080" aria-label="A robot arm lowers a bundle of thin orange filaments over a small object on a stand. The filaments curl and tangle around it, and the arm lifts it."><source src="media/filament_robot_grasp.mp4" type="video/mp4"></video></div>
-                <figcaption><b>The gripper itself,</b> at real speed: lowered over an object, the filaments curl around it and around one another, and the arm lifts.</figcaption>
+                <div class="clip"><video muted loop playsinline controls preload="none" data-bytes="784072" poster="media/filament_robot_grasp.jpg" width="1280" height="720" aria-label="A robot arm lowers a bundle of thin orange filaments over a small object on a stand. The filaments curl and tangle around it, and the arm lifts it."><source src="media/filament_robot_grasp-web.mp4" type="video/mp4"></video></div>
+                <figcaption><b>The gripper itself,</b> at real speed: lowered over an object, the filaments curl around it and around one another, and the arm lifts. Experiment by Kaitlyn Becker and colleagues in Robert Wood's group.</figcaption>
               </figure>
               <dl class="spec">
                 <dt>Paper</dt><dd>K. Becker, C. Teeple, N. Charles, <span class="me">Y. Jung</span>, D. Baum, J. C. Weaver, L. Mahadevan, R. Wood. <a href="https://doi.org/10.1073/pnas.2209819119" rel="noopener">Active entanglement enables stochastic, topological grasping</a>.<small>PNAS 119, e2209819119 (2022)</small></dd>
@@ -799,7 +799,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         </div>
         <figure class="seen one">
           <div class="tiles">
-            <div class="shot tall"><video muted loop playsinline controls preload="none" data-bytes="26992564" poster="media/mustafa-jackson-experiment.jpg" width="1920" height="1080" aria-label="Two printed lattices of wavy filaments, each seen from above and from the side. The first rises from flat into a dome, the second into a saddle."><source src="media/mustafa-jackson-experiment.mp4" type="video/mp4"></video></div>
+            <div class="shot tall"><video muted loop playsinline controls preload="none" data-bytes="3025650" poster="media/mustafa-jackson-experiment.jpg" width="960" height="1080" aria-label="Two printed lattices of wavy filaments, each seen from above and from the side. The first rises from flat into a dome, the second into a saddle."><source src="media/mustafa-jackson-experiment-web.mp4" type="video/mp4"></video></div>
           </div>
           <figcaption><b>The experiment.</b> Two printed lattices at real speed, each from above and from the side: one rises from flat into a dome, the other into a saddle. Scale bars 25 mm. Experiment by Mustafa Abdelrahman and Jackson Wilt.</figcaption>
         </figure>
