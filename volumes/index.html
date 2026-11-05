@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X-ray volume viewer</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d1117'/%3E%3Cpath d='M5 22c5-14 9 6 13-6s6-4 9-8' fill='none' stroke='%2358a6ff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0f1113; --panel: #16191c; --raised: #1f2327; --line: #2b3035;
+    --text: #e8e6e0; --muted: #9ba1a7; --accent: #e3a857;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: grid; grid-template-columns: 236px minmax(0, 1fr) 300px; overflow: hidden;
+  }
+  aside { background: var(--panel); overflow-y: auto; }
+  #list { border-right: 1px solid var(--line); padding: 14px 10px; }
+  #controls { border-left: 1px solid var(--line); padding: 16px; }
+  h1 { font-size: 14px; font-weight: 600; margin: 0 6px 12px; }
+  #home { display: block; margin: 0 6px 10px; color: var(--muted); text-decoration: none; font-size: 12px; }
+  #home:hover { color: var(--text); }
+  #home[hidden] { display: none; }
+  dd a { color: var(--accent); }
+  h2 { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+       color: var(--muted); margin: 16px 6px 6px; }
+  #controls h2 { margin: 22px 0 8px; }
+  #controls h2:first-of-type { margin-top: 14px; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .vol { display: grid; grid-template-columns: 52px 1fr; gap: 10px; align-items: center;
+         width: 100%; padding: 6px; border-radius: 7px; text-align: left; }
+  .vol:hover { background: var(--raised); }
+  .vol[aria-current="true"] { background: var(--raised); box-shadow: inset 2px 0 0 var(--accent); }
+  .vol img { width: 52px; height: 52px; object-fit: contain; background: #08090a; border-radius: 4px; display: block; }
+  .vol small { display: block; color: var(--muted); font-variant-numeric: tabular-nums; }
+  main { position: relative; min-width: 0; }
+  canvas#view { position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+                cursor: grab; touch-action: none; }
+  canvas#view:active { cursor: grabbing; }
+  #title { position: absolute; left: 16px; top: 12px; pointer-events: none; }
+  #title b { font-size: 15px; font-weight: 600; display: block; }
+  #title span { color: var(--muted); }
+  #hint { position: absolute; left: 16px; bottom: 10px; color: var(--muted); pointer-events: none; font-size: 12px; }
+  #status { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted);
+            background: rgba(15,17,19,.55); pointer-events: none; font-size: 14px; text-align: center; padding: 24px; }
+  #status[hidden] { display: none; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--bg);
+         border: 1px solid var(--line); border-radius: 7px; padding: 2px; gap: 2px; }
+  .seg button { padding: 5px 4px; border-radius: 5px; color: var(--muted); }
+  .seg button:hover { color: var(--text); }
+  .seg button[aria-pressed="true"] { background: var(--raised); color: var(--text); }
+  .row { margin-top: 10px; }
+  .row label { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); margin-bottom: 3px; }
+  .row output { color: var(--text); font-variant-numeric: tabular-nums; }
+  .row[hidden] { display: none; }
+  input[type=range] { width: 100%; margin: 0; accent-color: var(--accent); display: block; }
+  .check { display: flex; gap: 8px; align-items: center; margin-top: 8px; color: var(--muted); cursor: pointer; }
+  .check input { accent-color: var(--accent); margin: 0; }
+  #sliceBox { background: #08090a; border-radius: 6px; margin-top: 10px; height: 230px;
+              display: grid; place-items: center; overflow: hidden; }
+  #slice { max-width: 100%; max-height: 100%; display: block; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 0; }
+  dt { color: var(--muted); }
+  dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-align: right; }
+  .note { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
+  #hint .touch { display: none; }
+  @media (pointer: coarse) {
+    #hint .mouse { display: none; }
+    #hint .touch { display: inline; }
+  }
+  @media (max-width: 980px) {
+    body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(420px, 68vh) auto; overflow: auto; height: auto; min-height: 100%; }
+    #list { border-right: 0; border-bottom: 1px solid var(--line); overflow: visible; }
+    #groups { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x proximity; }
+    #groups h2 { display: none; }
+    #groups .vol { flex: 0 0 210px; scroll-snap-align: start; }
+    #controls { border-left: 0; border-top: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<aside id="list" aria-label="Volumes">
+  <a id="home" hidden></a>
+  <h1 id="heading">X-ray volumes</h1>
+  <div id="groups"></div>
+</aside>
+
+<main>
+  <canvas id="view" aria-label="3D view of the selected volume"></canvas>
+  <div id="title"><b id="name"></b><span id="subtitle"></span></div>
+  <div id="hint"><span class="mouse">Drag to rotate · Shift-drag to pan · Scroll to zoom · Double-click to reset · ↑↓ change volume</span><span class="touch">Drag to rotate · Pinch to zoom · Two-finger drag to pan · Double-tap to reset</span></div>
+  <div id="status">Loading…</div>
+</main>
+
+<aside id="controls" aria-label="Controls">
+  <h2>Rendering</h2>
+  <div class="seg" id="modes" role="group" aria-label="Render mode">
+    <button data-mode="0">Surface</button>
+    <button data-mode="1">Density</button>
+    <button data-mode="2">Max</button>
+  </div>
+  <div class="row" id="isoRow">
+    <label for="iso">Surface threshold <output id="isoOut"></output></label>
+    <input id="iso" type="range" min="2" max="90" value="22">
+  </div>
+  <div class="row" id="opacityRow" hidden>
+    <label for="opacity">Opacity <output id="opacityOut"></output></label>
+    <input id="opacity" type="range" min="2" max="100" value="35">
+  </div>
+
+  <h2>View</h2>
+  <div class="seg" id="views" role="group" aria-label="Camera presets">
+    <button data-view="iso">Angled</button>
+    <button data-view="front">Front</button>
+    <button data-view="side">Side</button>
+    <button data-view="top">Top</button>
+  </div>
+
+  <h2>Slice</h2>
+  <div class="seg" id="axes" role="group" aria-label="Slice axis">
+    <button data-axis="2">Z</button>
+    <button data-axis="1">Y</button>
+    <button data-axis="0">X</button>
+  </div>
+  <div id="sliceBox"><canvas id="slice" aria-label="Cross-section at the chosen position"></canvas></div>
+  <div class="row">
+    <label for="pos">Position <output id="posOut"></output></label>
+    <input id="pos" type="range" min="0" max="1" value="0">
+  </div>
+  <label class="check"><input id="showPlane" type="checkbox" checked> Show plane in 3D</label>
+  <label class="check"><input id="cut" type="checkbox"> Cut volume at slice</label>
+
+  <h2>Dataset</h2>
+  <dl id="meta"></dl>
+  <p class="note" id="note"></p>
+</aside>
+
+<script src="data/manifest.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+const VS = `#version 300 es
+out vec2 vUv;
+void main() {
+  vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+  vUv = p * 2.0 - 1.0;
+  gl_Position = vec4(vUv, 0.0, 1.0);
+}`;
+
+const FS = `#version 300 es
+precision highp float;
+precision highp sampler3D;
+in vec2 vUv;
+out vec4 fragColor;
+uniform sampler3D uVol;
+uniform vec3 uR, uU, uF, uBox, uHi;
+uniform vec2 uPan;
+uniform float uDist, uFocal, uAspect, uIso, uOpacity, uStep, uVoxel, uPlane;
+uniform int uMode, uAxis;
+uniform bool uShowPlane;
+
+const vec3 BG = vec3(0.059, 0.067, 0.075);
+const vec3 INK = vec3(0.93, 0.90, 0.84);
+const vec3 ACCENT = vec3(0.89, 0.66, 0.34);
+
+// The .mat axes (row, column, slice) form a mirror image of the sample, so
+// world x runs opposite to the row index.
+float vol(vec3 p) { return texture(uVol, vec3(-p.x, p.y, p.z) / (2.0 * uBox) + 0.5).r; }
+
+bool slab(vec3 ro, vec3 inv, vec3 lo, vec3 hi, out float t0, out float t1) {
+  vec3 a = (lo - ro) * inv, b = (hi - ro) * inv;
+  vec3 n = min(a, b), f = max(a, b);
+  t0 = max(max(n.x, n.y), n.z);
+  t1 = min(min(f.x, f.y), f.z);
+  return t1 > max(t0, 0.0);
+}
+
+float wire(vec3 p, float w) {
+  vec3 e = uBox - abs(p);
+  float lo = min(e.x, min(e.y, e.z));
+  float hi = max(e.x, max(e.y, e.z));
+  float mid = e.x + e.y + e.z - lo - hi;
+  return 1.0 - smoothstep(w * 0.5, w, mid);
+}
+
+vec3 shade(vec3 p, vec3 rd, float depth) {
+  float h = uVoxel;
+  vec3 g = vec3(vol(p + vec3(h, 0, 0)) - vol(p - vec3(h, 0, 0)),
+                vol(p + vec3(0, h, 0)) - vol(p - vec3(0, h, 0)),
+                vol(p + vec3(0, 0, h)) - vol(p - vec3(0, 0, h)));
+  float len = length(g);
+  vec3 n = len > 1e-4 ? -g / len : -rd;
+  if (dot(n, rd) > 0.0) n = -n;
+  float ao = 0.0;
+  for (int k = 1; k <= 3; k++) ao += vol(p + n * h * 2.5 * float(k)) / float(k);
+  ao = 1.0 - clamp(ao * 0.5, 0.0, 0.75);
+  vec3 l = normalize(-rd * 0.55 + uU * 0.65 + uR * 0.35);
+  float diff = max(dot(n, l), 0.0);
+  float spec = pow(max(dot(n, normalize(l - rd)), 0.0), 28.0);
+  vec3 c = INK * (0.22 * ao + 0.78 * diff * (0.45 + 0.55 * ao)) + 0.14 * spec;
+  return mix(c, c * 0.42, depth);
+}
+
+void main() {
+  vec3 ro = -uF * uDist + uR * uPan.x + uU * uPan.y;
+  vec3 rd = normalize(uF * uFocal + uR * vUv.x * uAspect + uU * vUv.y);
+  vec3 inv = 1.0 / rd;
+  vec3 col = BG;
+  float wireW = 0.0016 * uDist * 3.0 / uFocal;
+
+  float b0, b1;
+  bool inBox = slab(ro, inv, -uBox, uBox, b0, b1);
+  if (inBox) {
+    col = mix(col, vec3(0.42, 0.45, 0.48), 0.65 * wire(ro + rd * b1, wireW));
+  }
+
+  float t0, t1, hitT = 1e9;
+  if (slab(ro, inv, -uBox, uHi, t0, t1)) {
+    t0 = max(t0, 0.0);
+    float dt = uVoxel * uStep;
+    float jitter = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    int n = min(int((t1 - t0) / dt) + 1, 1500);
+    float span = max(t1 - t0, 1e-5);
+
+    if (uMode == 0) {
+      float t = t0 + dt * jitter;
+      for (int i = 0; i < n; i++) {
+        vec3 p = ro + rd * t;
+        if (vol(p) >= uIso) {
+          float a = t - dt, b = t;
+          if (i > 0) {
+            for (int k = 0; k < 4; k++) {
+              float m = 0.5 * (a + b);
+              if (vol(ro + rd * m) >= uIso) b = m; else a = m;
+            }
+          } else { b = t0; }
+          hitT = b;
+          col = shade(ro + rd * b, rd, clamp((b - t0) / span, 0.0, 1.0));
+          break;
+        }
+        t += dt;
+      }
+    } else if (uMode == 1) {
+      vec3 acc = vec3(0.0);
+      float alpha = 0.0, t = t0 + dt * jitter;
+      float k = uOpacity * uOpacity * 2.5 / max(uVoxel, 1e-4) * dt;
+      for (int i = 0; i < n && alpha < 0.985; i++) {
+        float v = vol(ro + rd * t);
+        float a = 1.0 - exp(-v * k);
+        float fade = 1.0 - 0.55 * (t - t0) / span;
+        acc += (1.0 - alpha) * a * INK * fade;
+        alpha += (1.0 - alpha) * a;
+        t += dt;
+      }
+      col = acc + (1.0 - alpha) * col;
+    } else {
+      float m = 0.0, t = t0 + dt * jitter;
+      for (int i = 0; i < n; i++) { m = max(m, vol(ro + rd * t)); t += dt; }
+      col = mix(col, INK, pow(m, 0.75));
+    }
+  }
+
+  if (uShowPlane) {
+    float tp = (uPlane - ro[uAxis]) * inv[uAxis];
+    vec3 q = ro + rd * tp;
+    vec3 e = uBox - abs(q);
+    e[uAxis] = 1.0;
+    float inside = min(e.x, min(e.y, e.z));
+    if (inside > 0.0 && tp > 0.0 && tp < hitT) {
+      float edge = 1.0 - smoothstep(wireW * 0.5, wireW * 1.5, inside);
+      col = mix(col, ACCENT, max(0.05, 0.9 * edge));
+    }
+  }
+
+  if (inBox) col = mix(col, vec3(0.5, 0.53, 0.56), 0.5 * wire(ro + rd * b0, wireW));
+  fragColor = vec4(col, 1.0);
+}`;
+
+const canvas = $("view");
+const gl = canvas.getContext("webgl2", { antialias: false, powerPreference: "high-performance" });
+const VOLS = window.VOLUMES || [];
+const AXIS = ["X", "Y", "Z"];
+const VIEWS = {
+  iso: [0.75, 0.42], front: [Math.PI * 1.5, 0], side: [0, 0], top: [Math.PI * 1.5, Math.PI / 2 - 0.001],
+};
+const S = {
+  vol: null, data: null, mode: 0, iso: 0.22, opacity: 0.35,
+  az: VIEWS.iso[0], el: VIEWS.iso[1], zoom: 1, panX: 0, panY: 0,
+  axis: 2, pos: 0, showPlane: true, cut: false,
+  scale: 1, token: 0,
+};
+const cache = new Map();
+const CACHE_MAX = 4;
+let prog, loc = {}, tex, pending = null, frame = 0, idleTimer = 0;
+
+function fail(msg) { const s = $("status"); s.hidden = false; s.textContent = msg; document.body.dataset.state = "error"; }
+
+function compile(type, src) {
+  const sh = gl.createShader(type);
+  gl.shaderSource(sh, src);
+  gl.compileShader(sh);
+  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+  return sh;
+}
+
+function initGL() {
+  prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+  for (const n of ["uVol","uR","uU","uF","uBox","uHi","uPan","uDist","uFocal","uAspect","uIso",
+                   "uOpacity","uStep","uVoxel","uPlane","uMode","uAxis","uShowPlane"])
+    loc[n] = gl.getUniformLocation(prog, n);
+  gl.bindVertexArray(gl.createVertexArray());
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+}
+
+function boxOf(v) {
+  const m = Math.max(...v.dims);
+  return v.dims.map(d => 0.5 * d / m);
+}
+
+function planeWorld() {
+  const box = boxOf(S.vol), n = S.vol.dims[S.axis];
+  const w = ((S.pos + 0.5) / n - 0.5) * 2 * box[S.axis];
+  return S.axis === 0 ? -w : w;
+}
+
+function render() {
+  frame = 0;
+  if (!S.data) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2) * S.scale;
+  const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
+  const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  gl.viewport(0, 0, w, h);
+
+  const ce = Math.cos(S.el), se = Math.sin(S.el), ca = Math.cos(S.az), sa = Math.sin(S.az);
+  const F = [-ce * ca, -ce * sa, -se];
+  let R = [F[1], -F[0], 0];
+  const rl = Math.hypot(R[0], R[1]) || 1;
+  R = [R[0] / rl, R[1] / rl, 0];
+  const U = [R[1] * F[2], -R[0] * F[2], R[0] * F[1] - R[1] * F[0]];
+
+  const box = boxOf(S.vol), hi = box.slice(), plane = planeWorld();
+  if (S.cut) hi[S.axis] = plane;
+
+  gl.uniform3fv(loc.uR, R); gl.uniform3fv(loc.uU, U); gl.uniform3fv(loc.uF, F);
+  gl.uniform3fv(loc.uBox, box); gl.uniform3fv(loc.uHi, hi);
+  gl.uniform2f(loc.uPan, S.panX, S.panY);
+  gl.uniform1f(loc.uDist, 3.4);
+  gl.uniform1f(loc.uFocal, 3.1 * S.zoom);
+  gl.uniform1f(loc.uAspect, w / h);
+  gl.uniform1f(loc.uIso, S.iso);
+  gl.uniform1f(loc.uOpacity, S.opacity);
+  gl.uniform1f(loc.uStep, S.scale < 1 ? 1.5 : 0.6);
+  gl.uniform1f(loc.uVoxel, 1 / Math.max(...S.vol.dims));
+  gl.uniform1f(loc.uPlane, plane);
+  gl.uniform1i(loc.uMode, S.mode);
+  gl.uniform1i(loc.uAxis, S.axis);
+  gl.uniform1i(loc.uShowPlane, S.showPlane ? 1 : 0);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+
+function draw() { if (!frame) frame = requestAnimationFrame(render); }
+
+function interact() {
+  S.scale = 0.55;
+  draw();
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => { S.scale = 1; draw(); }, 170);
+}
+
+function drawSlice() {
+  if (!S.data) return;
+  const [nx, ny, nz] = S.vol.dims, d = S.data, a = S.axis, i = S.pos;
+  // Slices use the same true handedness as the 3D view, so Z slices are the
+  // source TIFFs flipped upside down (MATLAB's first index, X here, is the row).
+  const w = a === 1 ? nx : ny, h = a === 2 ? nx : nz;
+  const c = $("slice");
+  c.width = w; c.height = h;
+  const ctx = c.getContext("2d"), img = ctx.createImageData(w, h), px = img.data;
+  for (let v = 0; v < h; v++) {
+    for (let u = 0; u < w; u++) {
+      const x = a === 0 ? i : (a === 1 ? w - 1 - u : h - 1 - v);
+      const y = a === 1 ? i : u;
+      const z = a === 2 ? i : h - 1 - v;
+      const val = LUT[d[x + nx * (y + ny * z)]], o = 4 * (u + v * w);
+      px[o] = val; px[o + 1] = val; px[o + 2] = val; px[o + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const n = S.vol.dims[a], f = S.vol.factor;
+  $("posOut").textContent = `${AXIS[a]} ${i + 1} / ${n} (≈ original ${i * f + 1})`;
+}
+const LUT = Uint8Array.from({ length: 256 }, (_, i) => Math.round(255 * Math.pow(i / 255, 0.6)));
+
+function setSlice(axis, pos) {
+  S.axis = axis;
+  const n = S.vol.dims[axis];
+  S.pos = Math.min(n - 1, Math.max(0, pos));
+  const r = $("pos");
+  r.max = n - 1; r.value = S.pos;
+  pressed("axes", "axis", axis);
+  drawSlice();
+}
+
+function pressed(group, key, value) {
+  for (const b of $(group).querySelectorAll("button"))
+    b.setAttribute("aria-pressed", b.dataset[key] === String(value));
+}
+
+function setMode(m) {
+  S.mode = m;
+  pressed("modes", "mode", m);
+  $("isoRow").hidden = m !== 0;
+  $("opacityRow").hidden = m !== 1;
+  draw();
+}
+
+function showMeta(v) {
+  const [a, b, c] = v.origDims, [x, y, z] = v.dims;
+  $("name").textContent = v.name;
+  $("subtitle").textContent = `${a} × ${b} × ${c} voxels`;
+  const rows = [];
+  if (v.paper) rows.push(["Paper", v.paper]);
+  if (v.file) rows.push(["File", v.file], ["Variable", v.variable]);
+  rows.push(["Original", `${a} × ${b} × ${c}`], ["Viewer", `${x} × ${y} × ${z}`],
+            ["Downsampled", `${v.factor}×`], ["Solid", `${v.solidPct.toFixed(2)}%`]);
+  $("meta").replaceChildren(...rows.flatMap(([k, t]) => {
+    const dt = document.createElement("dt"), dd = document.createElement("dd");
+    dt.textContent = k;
+    if (typeof t === "object") {
+      if (t.url) {
+        const link = document.createElement("a");
+        link.href = t.url; link.target = "_blank"; link.rel = "noopener"; link.textContent = t.label;
+        dd.append(link);
+      } else dd.textContent = t.label;
+    } else dd.textContent = t;
+    return [dt, dd];
+  }));
+  $("note").textContent = `Each viewer voxel is one ${v.factor}×${v.factor}×${v.factor} block of the binarized scan, shown as its solid fraction. Features smaller than a block can look thin or broken here even when they are intact in the full-resolution data.`;
+  for (const b of document.querySelectorAll(".vol")) b.setAttribute("aria-current", b.dataset.id === v.id);
+}
+
+function useVolume(v, data) {
+  S.vol = v; S.data = data;
+  if (tex) gl.deleteTexture(tex);
+  tex = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_3D, tex);
+  gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  for (const w of [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T, gl.TEXTURE_WRAP_R])
+    gl.texParameteri(gl.TEXTURE_3D, w, gl.CLAMP_TO_EDGE);
+  const [nx, ny, nz] = v.dims;
+  gl.texImage3D(gl.TEXTURE_3D, 0, gl.R8, nx, ny, nz, 0, gl.RED, gl.UNSIGNED_BYTE, data);
+  gl.uniform1i(loc.uVol, 0);
+  setSlice(S.axis, Math.floor(v.dims[S.axis] / 2));
+  $("status").hidden = true;
+  document.body.dataset.state = "ready";
+  document.body.dataset.volume = v.id;
+  draw();
+}
+
+async function decode(b64) {
+  const bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+window.__volumeLoaded = async (id, b64) => {
+  if (!pending || pending.id !== id) return;
+  const { token, v, tag } = pending;
+  pending = null;
+  tag.remove();
+  try {
+    const data = await decode(b64);
+    const [nx, ny, nz] = v.dims;
+    if (data.length !== nx * ny * nz) throw new Error("size mismatch");
+    cache.set(id, data);
+    if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value);
+    if (token === S.token) useVolume(v, data);
+  } catch (e) { fail(`Could not decode ${v.name}: ${e.message}`); }
+};
+
+function load(v) {
+  const token = ++S.token;
+  showMeta(v);
+  location.hash = v.id;
+  if (pending) { pending.tag.remove(); pending = null; }
+  if (cache.has(v.id)) {
+    const d = cache.get(v.id);
+    cache.delete(v.id); cache.set(v.id, d);
+    useVolume(v, d);
+    return;
+  }
+  const st = $("status");
+  st.hidden = false; st.textContent = `Loading ${v.name}…`;
+  document.body.dataset.state = "loading";
+  const tag = document.createElement("script");
+  tag.src = `data/${v.id}.js`;
+  tag.onerror = () => { if (token === S.token) fail(`Could not read data/${v.id}.js`); };
+  pending = { id: v.id, token, v, tag };
+  document.head.append(tag);
+}
+
+function setView(name) {
+  [S.az, S.el] = VIEWS[name];
+  S.zoom = 1; S.panX = 0; S.panY = 0;
+  draw();
+}
+
+function buildList() {
+  const root = $("groups");
+  // Volumes without a group are listed with no heading.
+  for (const g of [...new Set(VOLS.map(v => v.group || ""))]) {
+    if (g) {
+      const h = document.createElement("h2");
+      h.textContent = g;
+      root.append(h);
+    }
+    for (const v of VOLS.filter(x => (x.group || "") === g)) {
+      const b = document.createElement("button");
+      b.className = "vol"; b.dataset.id = v.id;
+      const img = document.createElement("img");
+      img.src = v.thumb; img.alt = "";
+      const span = document.createElement("span"), small = document.createElement("small");
+      span.textContent = v.name;
+      small.textContent = v.origDims.join(" × ");
+      span.append(small);
+      b.append(img, span);
+      b.addEventListener("click", () => load(v));
+      root.append(b);
+    }
+  }
+}
+
+function wire() {
+  let drag = null;
+  // Two touches: pinch to zoom, move both to pan.
+  const touches = new Map();
+  let pinch = null, lastTap = 0;
+  const pinchState = () => {
+    const [a, b] = [...touches.values()];
+    return { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  };
+  const pan = (dx, dy) => {
+    const k = 2 * 3.4 / (3.1 * S.zoom * canvas.clientHeight);
+    S.panX -= dx * k; S.panY += dy * k;
+  };
+  const release = e => {
+    touches.delete(e.pointerId);
+    if (touches.size < 2) pinch = null;
+    if (touches.size === 0) drag = null;
+    else if (touches.size === 1 && !pinch) {
+      const [t] = touches.values();
+      drag = { x: t.x, y: t.y, pan: false };
+    }
+  };
+  canvas.addEventListener("pointerdown", e => {
+    canvas.setPointerCapture(e.pointerId);
+    if (e.pointerType === "touch") {
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      // Not every mobile browser sends dblclick, so detect double taps here.
+      if (touches.size === 1) {
+        if (e.timeStamp - lastTap < 300) { lastTap = 0; setView("iso"); }
+        else lastTap = e.timeStamp;
+      }
+      if (touches.size === 2) { drag = null; pinch = pinchState(); return; }
+      if (touches.size > 2) return;
+    }
+    drag = { x: e.clientX, y: e.clientY, pan: e.shiftKey || e.button === 2 };
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinch) {
+      if (touches.size !== 2) return;
+      const now = pinchState();
+      S.zoom = Math.max(0.5, Math.min(16, S.zoom * now.d / pinch.d));
+      pan(now.x - pinch.x, now.y - pinch.y);
+      pinch = now;
+      interact();
+      return;
+    }
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (drag.pan) pan(dx, dy);
+    else {
+      S.az -= dx * 0.008;
+      S.el = Math.max(-1.56, Math.min(1.56, S.el + dy * 0.008));
+    }
+    interact();
+  });
+  canvas.addEventListener("pointerup", release);
+  canvas.addEventListener("pointercancel", release);
+  canvas.addEventListener("contextmenu", e => e.preventDefault());
+  canvas.addEventListener("dblclick", () => setView("iso"));
+  canvas.addEventListener("wheel", e => {
+    e.preventDefault();
+    S.zoom = Math.max(0.5, Math.min(16, S.zoom * Math.exp(-e.deltaY * 0.0015)));
+    interact();
+  }, { passive: false });
+
+  $("modes").addEventListener("click", e => { const m = e.target.dataset.mode; if (m) setMode(+m); });
+  $("views").addEventListener("click", e => { const m = e.target.dataset.view; if (m) setView(m); });
+  $("axes").addEventListener("click", e => {
+    const a = e.target.dataset.axis;
+    if (a && S.vol) { setSlice(+a, Math.floor(S.vol.dims[+a] / 2)); draw(); }
+  });
+  const iso = $("iso"), op = $("opacity");
+  const syncIso = () => { S.iso = iso.value / 100; $("isoOut").textContent = `${iso.value}% solid`; };
+  const syncOp = () => { S.opacity = op.value / 100; $("opacityOut").textContent = `${op.value}%`; };
+  iso.addEventListener("input", () => { syncIso(); interact(); });
+  op.addEventListener("input", () => { syncOp(); interact(); });
+  syncIso(); syncOp();
+  $("pos").addEventListener("input", e => { S.pos = +e.target.value; drawSlice(); interact(); });
+  $("showPlane").addEventListener("change", e => { S.showPlane = e.target.checked; draw(); });
+  $("cut").addEventListener("change", e => { S.cut = e.target.checked; draw(); });
+  new ResizeObserver(draw).observe(canvas);
+  addEventListener("keydown", e => {
+    if (!["ArrowUp", "ArrowDown"].includes(e.key) || e.target.matches("input") || !S.vol) return;
+    e.preventDefault();
+    const i = VOLS.findIndex(v => v.id === document.body.dataset.volume);
+    load(VOLS[(i + (e.key === "ArrowDown" ? 1 : -1) + VOLS.length) % VOLS.length]);
+  });
+  addEventListener("hashchange", () => {
+    const v = VOLS.find(x => x.id === location.hash.slice(1));
+    if (v && v.id !== (S.vol && S.vol.id) && !(pending && pending.id === v.id)) load(v);
+  });
+}
+
+function start() {
+  if (!gl) return fail("This browser does not support WebGL2, which the viewer needs.");
+  if (!VOLS.length) return fail("data/manifest.js is missing. Run build_viewer_data.py first.");
+  if (typeof DecompressionStream === "undefined") return fail("This browser is too old to decompress the volumes.");
+  try { initGL(); } catch (e) { return fail(`Could not start the renderer: ${e.message}`); }
+  const info = window.VIEWER || {};
+  if (info.title) { $("heading").textContent = info.title; document.title = info.title; }
+  // Inside the portfolio's frame the page around it already leads back.
+  if (info.home && window.self === window.top) { const h = $("home"); h.href = info.home.url; h.textContent = `← ${info.home.label}`; h.hidden = false; }
+  buildList();
+  wire();
+  setMode(0);
+  pressed("axes", "axis", S.axis);
+  load(VOLS.find(v => v.id === location.hash.slice(1)) || VOLS[0]);
+}
+start();
+</script>
+</body>
+</html>

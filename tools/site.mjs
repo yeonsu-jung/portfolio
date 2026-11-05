@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Posters for index.html, and a check that index.html still works.
+// Posters for the portfolio's two pages, index.html (robotics) and imaging.html (3D imaging),
+// and a check that both still work.
 //
 //     node tools/site.mjs posters [id ...]    screenshots of the viewers -> posters/, posters/thumbs/
-//     node tools/site.mjs check               open index.html, run every slide and every "view to
+//     node tools/site.mjs check               open both pages, run every slide and every "view to
 //                                             try", then try the page's own behaviour: viewers
 //                                             starting as they are scrolled to, scrolling past
 //                                             one, clicking into it, full screen, no JavaScript,
@@ -14,7 +15,7 @@
 // headless with software WebGL, so no display or GPU is needed, but the viewers still fetch
 // three.js from their CDN.
 //
-// The slides are read from index.html: every <article class="slide"> gives the page to open
+// The slides are read from both pages: every <article class="slide"> gives the page to open
 // (data-src), the kind of page (data-kind), and for the replay viewers the state to draw
 // (data-shot, the viewer's own URL hash: run, t, cam, ...).  The other pages keep no state in
 // their URL, so what to do before their picture is taken is in PAGES below.
@@ -36,18 +37,23 @@ const PAGES = {
   lattice: { clip: 'canvas#stage', prep: `const s = document.getElementById('step'); s.value = 30; s.dispatchEvent(new Event('input', { bubbles: true }));` },
   scan:    { clip: '#stage', prep: '' },
   segment: { clip: '#stage-b', prep: '' },
+  volumes: { clip: 'canvas#view', prep: '' },
 };
 const HIDE_PANELS = '.panel, #controls, #divider, #heads { display: none !important; }';
 
-// ------------------------------------------------------------------ the slides in index.html
+// ------------------------------------------------------------------ the slides in the two pages
+
+const HTML = ['index.html', 'imaging.html'];
 
 function slides() {
-  const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
   const unesc = s => s.replaceAll('&amp;', '&').replaceAll('&quot;', '"');
-  return [...html.matchAll(/<article class="slide"([^>]*)>/g)].map(m => {
-    const a = Object.fromEntries([...m[1].matchAll(/([\w-]+)="([^"]*)"/g)].map(x => [x[1], unesc(x[2])]));
-    return { id: a.id, name: a['data-name'], kind: a['data-kind'], src: a['data-src'], hash: a['data-hash'] || '',
-             shot: a['data-shot'] || '', bytes: +a['data-bytes'] };
+  return HTML.flatMap(page => {
+    const html = readFileSync(join(ROOT, page), 'utf8');
+    return [...html.matchAll(/<article class="slide"([^>]*)>/g)].map(m => {
+      const a = Object.fromEntries([...m[1].matchAll(/([\w-]+)="([^"]*)"/g)].map(x => [x[1], unesc(x[2])]));
+      return { page, id: a.id, name: a['data-name'], kind: a['data-kind'], src: a['data-src'], hash: a['data-hash'] || '',
+               shot: a['data-shot'] || '', bytes: +a['data-bytes'] };
+    });
   });
 }
 
@@ -180,7 +186,7 @@ async function chrome({ width = 1280, height = 720 } = {}) {
 async function posters(only) {
   const todo = slides().filter(s => !only.length || only.includes(s.id));
   const unknown = only.filter(id => !todo.some(s => s.id === id));
-  if (unknown.length) throw new Error(`no slide called ${unknown[0]} in index.html`);
+  if (unknown.length) throw new Error(`no slide called ${unknown[0]} in ${HTML.join(' or ')}`);
   const b = await chrome();
   try {
     for (const s of todo) {
@@ -251,27 +257,33 @@ async function check(url) {
   for (const s of all) {
     const f = join(ROOT, s.src);
     if (!existsSync(f)) { fail(`${s.id}: ${s.src} is missing`); continue; }
-    if (statSync(f).size !== s.bytes) fail(`${s.id}: ${s.src} is ${statSync(f).size} bytes, index.html says ${s.bytes} (rebuilt? update data-bytes, the size label and the poster)`);
+    if (statSync(f).size !== s.bytes) fail(`${s.id}: ${s.src} is ${statSync(f).size} bytes, ${s.page} says ${s.bytes} (rebuilt? update data-bytes, the size label and the poster)`);
     for (const img of [`posters/${s.id}.webp`, `posters/thumbs/${s.id}.webp`, ...(s.kind === 'page' ? [`posters/${s.id}-dark.webp`, `posters/thumbs/${s.id}-dark.webp`] : [])])
       if (!existsSync(join(ROOT, img))) fail(`${s.id}: ${img} is missing (node tools/site.mjs posters ${s.id})`);
   }
-  const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
-  for (const m of html.matchAll(/(?:src|poster|srcset)="((?:posters|media)\/[^"]+)"/g))
-    if (!existsSync(join(ROOT, m[1]))) fail(`index.html refers to ${m[1]}, which is missing`);
-  for (const m of html.matchAll(/href="#([\w-]+)"/g))
-    if (!new RegExp(`id="${m[1]}"`).test(html)) fail(`index.html links to #${m[1]}, which is not on the page`);
-  for (const m of html.matchAll(/href="(index_\w+\.html)#([^"]*)"\s+data-hash="([^"]*)"/g))
-    if (m[2] !== m[3]) fail(`a preset's link (${m[1]}#${m[2]}) and its data-hash (${m[3]}) differ`);
+  const pages = Object.fromEntries(HTML.map(page => [page, readFileSync(join(ROOT, page), 'utf8')]));
+  for (const [page, html] of Object.entries(pages)) {
+    for (const m of html.matchAll(/(?:src|poster|srcset)="((?:posters|media)\/[^"]+)"/g))
+      if (!existsSync(join(ROOT, m[1]))) fail(`${page} refers to ${m[1]}, which is missing`);
+    for (const m of html.matchAll(/href="#([\w-]+)"/g))
+      if (!new RegExp(`id="${m[1]}"`).test(html)) fail(`${page} links to #${m[1]}, which is not on the page`);
+    for (const m of html.matchAll(/href="([\w.]+\.html)#([\w-]+)"/g))
+      if (pages[m[1]] && !new RegExp(`id="${m[2]}"`).test(pages[m[1]])) fail(`${page} links to ${m[1]}#${m[2]}, which is not on that page`);
+    for (const m of html.matchAll(/href="((?:index_\w+\.html|\w+\/index\.html))#([^"]*)"\s+data-hash="([^"]*)"/g))
+      if (m[2] !== m[3]) fail(`a preset's link (${m[1]}#${m[2]}) and its data-hash (${m[3]}) differ`);
+  }
 
-  console.log(`${url || 'index.html'} in Chrome, 1440 x 900`);
   const b = await chrome({ width: 1440, height: 900 });
   try {
+   for (const page of HTML) {
+    const at = url ? new URL(page === 'index.html' ? '' : page, url).href : pathToFileURL(join(ROOT, page)).href;
+    console.log(`${at} in Chrome, 1440 x 900`);
     const p = await b.page({ w: 1440, h: 900 });
-    await p.goto(index);
+    await p.goto(at);
     await sleep(1200);
     const broken = await p.eval(`[...document.images].filter(i => i.complete && !i.naturalWidth).map(i => i.getAttribute('src'))`);
-    for (const src of broken) fail(`image did not load: ${src}`);
-    for (const s of all) {
+    for (const src of broken) fail(`${page}: image did not load: ${src}`);
+    for (const s of all.filter(s => s.page === page)) {
       // each slide, each of its presets: the frame must load that page, and a replay viewer must start
       const presets = await p.eval(`[...document.querySelectorAll('#${s.id} .presets a')].map(a => a.dataset.hash)`);
       for (const hash of [null, ...presets]) {
@@ -303,8 +315,9 @@ async function check(url) {
         }
       }
     }
-    for (const line of p.logs) fail('index.html: ' + line);
+    for (const line of p.logs) fail(page + ': ' + line);
     await p.close();
+   }
     await behaviour(b, fail, index, !!url);
   } finally { await b.close(); }
   console.log(bad.length ? `\n${bad.length} problem(s)` : '\nall good');

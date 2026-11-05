@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yeonsu Jung · Interactive portfolio</title>
-<meta name="description" content="Simulation and optimization of slender things in contact: whip cracking, a two-link cat flip, a cobra-rearing chain, entangling rod packings, a filament gripper, shape-morphing lattices and X-ray rod tracing. Every panel is a recorded run you can orbit, scrub and compare.">
+<title>Yeonsu Jung · Portfolio (robotics)</title>
+<meta name="description" content="Simulation and optimization of slender things in contact: whip cracking, a two-link cat flip, a cobra-rearing chain, entangling rod packings, a filament gripper and shape-morphing lattices. Every panel is a recorded run you can orbit, scrub and compare.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d1117'/%3E%3Cpath d='M5 22c5-14 9 6 13-6s6-4 9-8' fill='none' stroke='%2358a6ff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -138,7 +138,7 @@ button { font: inherit; color: inherit; }
   display: inline-block;
 }
 .topbar .sections a:hover, .topbar .sections a[aria-current="true"] { color: var(--accent); }
-.topbar .sections a i { font-style: normal; color: var(--ink-3); margin-right: 5px; }
+.topbar .sections a i { display: none; }   /* the numbers are in each section's heading; with four tabs the bar has no room for them */
 
 /* ---------- hero ---------- */
 .hero { padding-block: 58px 54px; }
@@ -190,6 +190,8 @@ button { font: inherit; color: inherit; }
   isolation: isolate;
 }
 .sheet img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s ease; }
+.sheet a.wide { grid-column: span 2; aspect-ratio: auto; }   /* as tall as its row, twice as wide */
+.sheet a.wide img { position: absolute; inset: 0; }
 .sheet a:hover img { transform: scale(1.045); }
 .sheet a:hover, .sheet a:focus-visible { border-color: var(--accent); }
 .sheet span {
@@ -463,6 +465,12 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
 .fine { font-family: var(--f-mono); font-size: var(--fs-micro); color: var(--ink-3); margin-top: 30px; line-height: 1.6; }
 
 /* ---------- responsive ---------- */
+/* the four tabs and this page's sections share one line only on a wide screen */
+@media (max-width: 1280px) {
+  :root { --bar: 80px; }
+  .topbar .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 7px; }
+  .topbar .sections { flex-basis: 100%; margin-left: 0; }
+}
 @media (max-width: 1040px) {
   :root { --bar: 80px; }
   .topbar .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 7px; }
@@ -495,6 +503,10 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .topbar .sections a i { display: none; }
   .topbar .wrap { column-gap: 12px; }
   .tabs a { padding: 5px 8px; }
+  /* four tabs do not fit beside the name on a phone: they get a line of their own */
+  :root { --bar: 128px; }
+  .topbar .wrap { min-height: 0; padding-bottom: 2px; }
+  .tabs { flex-wrap: wrap; row-gap: 2px; flex-basis: 100%; margin-left: -8px; }
   .screen, .slide[data-kind="page"] .screen { aspect-ratio: auto; height: min(72vh, 560px); max-height: none; }
   .cards, .cards.pair, .asks { grid-template-columns: minmax(0, 1fr); }
   .slide + .slide { margin-top: 64px; }
@@ -519,7 +531,8 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     <nav aria-label="Site">
       <ul class="tabs">
         <li><a href="/">Home</a></li>
-        <li><a href="/portfolio/" aria-current="page">Portfolio</a></li>
+        <li><a href="/portfolio/" aria-current="page">Portfolio (robotics)</a></li>
+        <li><a href="/portfolio/imaging.html">Portfolio (3D imaging)</a></li>
         <li><a href="/publications.html">Publications</a></li>
       </ul>
     </nav>
@@ -528,10 +541,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <li><a href="#rods"><i>01</i>Rods</a></li>
         <li><a href="#many-body"><i>02</i>Many-body</a></li>
         <li><a href="#lattices"><i>03</i>Lattices</a></li>
-        <li><a href="#xray"><i>04</i>X-ray</a></li>
-        <li><a href="#phd"><i>05</i>PhD</a></li>
-        <li><a href="#more"><i>06</i>More</a></li>
-        <li><a href="#thread"><i>07</i>Thread</a></li>
+        <li><a href="#phd"><i>04</i>PhD</a></li>
+        <li><a href="#more"><i>05</i>More</a></li>
+        <li><a href="#thread"><i>06</i>Thread</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -548,7 +560,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <h1>Yeonsu Jung</h1>
         <p class="role">Research Associate · <a href="https://seas.harvard.edu/person/yeonsu-jung" rel="noopener">Applied Mathematics, Harvard SEAS</a> · Mahadevan group</p>
         <p class="lede">I simulate slender things in contact (whips, snakes, rod packings, filament grippers, printed lattices) and use optimization to make them do something on purpose, or to explain why they hold together.</p>
-        <p class="how">Sections 1 to 4 are live. Each panel is a recorded simulation or reconstruction, not a video. It starts when you scroll to it; click it to orbit, scrub through time, switch runs, or put two side by side.</p>
+        <p class="how">Sections 1 to 3 are live. Each panel is a recorded simulation, not a video. It starts when you scroll to it; click it to orbit, scrub through time, switch runs, or put two side by side.</p>
         <ul class="links">
           <li><a class="primary" href="#rods">Start with the whip</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -557,7 +569,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         </ul>
       </div>
 
-      <nav class="sheet" aria-label="The nine live panels">
+      <nav class="sheet" aria-label="The seven live panels, and the 3D imaging portfolio">
         <a href="#whip"><img src="posters/thumbs/whip.webp" width="480" height="270" alt="" decoding="async"><span><i>1.1</i>Whip crack</span></a>
         <a href="#catflip"><img src="posters/thumbs/catflip.webp" width="480" height="270" alt="" decoding="async"><span><i>1.2</i>Cat flip</span></a>
         <a href="#cobra"><img src="posters/thumbs/cobra.webp" width="480" height="270" alt="" decoding="async"><span><i>1.3</i>Cobra</span></a>
@@ -565,8 +577,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <a href="#gripper"><img src="posters/thumbs/gripper.webp" width="480" height="270" alt="" decoding="async"><span><i>2.2</i>Filament gripper</span></a>
         <a href="#linking"><picture><source srcset="posters/thumbs/linking-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/linking.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>2.3</i>Entangling rods</span></a>
         <a href="#lattice"><picture><source srcset="posters/thumbs/lattice-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/lattice.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>3.1</i>Snake lattice</span></a>
-        <a href="#scan"><picture><source srcset="posters/thumbs/scan-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/scan.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>4.1</i>X-ray: a scan</span></a>
-        <a href="#segment"><picture><source srcset="posters/thumbs/segment-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/thumbs/segment.webp" width="480" height="270" alt="" decoding="async"></picture><span><i>4.2</i>X-ray: one rod</span></a>
+        <a class="wide" href="imaging.html"><img src="posters/thumbs/volumes.webp" width="480" height="300" alt="" decoding="async"><span>3D imaging: X-ray scans and segmentation →</span></a>
       </nav>
     </div>
   </div>
@@ -867,75 +878,11 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     </div>
   </section>
 
-  <!-- ================= 4 · X-RAY ================= -->
-  <section class="block" id="xray" aria-labelledby="xray-h">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow"><b>04</b> · Reconstruction</p>
-        <h2 id="xray-h">Finding every rod in an X-ray scan</h2>
-        <p>To compare a real packing with a simulated one, the tomogram first has to become a list of rods. The pipeline matches cylinders to voxels: find a rod, trace it, remove its voxels, look for the next. Fitting one cylinder is a small optimization problem: it can be done by direct search or, more simply, by a trimmed principal-component fit, which is a singular value decomposition.</p>
-      </div>
-
-      <div class="slides">
-
-        <article class="slide" id="scan" data-name="A whole scan" data-kind="page" data-src="index_xray_stack.html" data-bytes="1655950">
-          <div class="frame">
-            <header class="slide-head">
-              <div class="what"><span class="num">4.1</span><h3>A whole scan, rod by rod</h3></div>
-            </header>
-            <div class="screen">
-              <a class="poster" href="index_xray_stack.html">
-                <picture><source srcset="posters/scan-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/scan.webp" width="1600" height="1000" alt="Thousands of thin rods, coloured by direction, filling a squat cylindrical volume." loading="lazy" decoding="async"></picture>
-                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>1.7 MB</small></span>
-              </a>
-            </div>
-          </div>
-          <div class="about">
-            <div>
-              <ul class="tags"><li>X-ray tomography</li><li>segmentation</li></ul>
-              <p>Every rod the cylinder-matching pipeline found in one image stack: 4,582 rods in 2000 × 2000 × 741 voxels, from 4,664 traces made in 722 s, then cut at kinks and joined into whole rods. Press Play to watch them appear in the order they were found. Colour them by direction or length, cut a slab through the pack, or click a rod to read its numbers.</p>
-            </div>
-            <dl class="spec">
-              <dt>Paper</dt><dd><span class="me">Y. Jung</span>, T. Plumb-Reyes, H.-Y. G. Lin, L. Mahadevan. <a href="https://doi.org/10.1073/pnas.2401868122" rel="noopener">Entanglement transition in random rod packings</a>.<small>PNAS 122, e2401868122 (2025) · first author</small></dd>
-              <dt>Shown</dt><dd>4,582 rods at their measured radius, straightened to within one voxel of the traced centreline</dd>
-            </dl>
-          </div>
-        </article>
-
-        <article class="slide" id="segment" data-name="How a rod is found" data-kind="page" data-src="index_xray_segment.html" data-bytes="3715115">
-          <div class="frame">
-            <header class="slide-head">
-              <div class="what"><span class="num">4.2</span><h3>How one rod is found</h3></div>
-            </header>
-            <div class="screen">
-              <a class="poster" href="index_xray_segment.html">
-                <picture><source srcset="posters/segment-dark.webp" media="(prefers-color-scheme: dark)"><img src="posters/segment.webp" width="1600" height="1000" alt="A block of voxels in which every rod has been given its own colour and a traced centreline." loading="lazy" decoding="async"></picture>
-                <span class="run"><span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l15 9-15 9z"/></svg></span><b>Run it here</b><small>3.7 MB</small></span>
-              </a>
-            </div>
-          </div>
-          <div class="about">
-            <div>
-              <ul class="tags"><li>optimization</li><li>trimmed PCA (SVD)</li><li>direct search</li></ul>
-              <p>A 201³-voxel crop from the dense centre of a packing, 442,435 rod voxels, segmented by four versions of the pipeline. Play runs two of them on the same clock, at their measured speeds.</p>
-              <p>Further down the page, one cylinder fit is taken step by step. A trimmed principal-component fit and a direct search (fminsearch) start from the same deliberately poor guess, 1.5 voxels off centre and 12° tilted, and each tries to fill the cylinder with voxels.</p>
-            </div>
-            <dl class="spec">
-              <dt>Paper</dt><dd><span class="me">Y. Jung</span>, T. Plumb-Reyes, H.-Y. G. Lin, L. Mahadevan. <a href="https://doi.org/10.1073/pnas.2401868122" rel="noopener">Entanglement transition in random rod packings</a>.<small>PNAS 122, e2401868122 (2025) · first author</small></dd>
-              <dt>Shown</dt><dd>One 201³ crop · four pipeline versions · one cylinder fit, two methods</dd>
-            </dl>
-          </div>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 5 · PHD ================= -->
+  <!-- ================= 4 · PHD ================= -->
   <section class="block" id="phd" aria-labelledby="phd-h">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow"><b>05</b> · PhD · Seoul National University · 2019</p>
+        <p class="eyebrow"><b>04</b> · PhD · Seoul National University · 2019</p>
         <h2 id="phd-h">Soft matter and soft robotics</h2>
         <p>My doctoral work, with Ho-Young Kim, was on how liquids move through sponges and soil, and on hydrogel devices.</p>
       </div>
@@ -979,11 +926,11 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     </div>
   </section>
 
-  <!-- ================= 6 · MISCELLANEOUS ================= -->
+  <!-- ================= 5 · MISCELLANEOUS ================= -->
   <section class="block" id="more" aria-labelledby="more-h">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow"><b>06</b> · Miscellaneous</p>
+        <p class="eyebrow"><b>05</b> · Miscellaneous</p>
         <h2 id="more-h">Smaller tools and studies</h2>
       </div>
       <ul class="cards pair">
@@ -1017,11 +964,11 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     </div>
   </section>
 
-  <!-- ================= 7 · THE THREAD ================= -->
+  <!-- ================= 6 · THE THREAD ================= -->
   <section class="block" id="thread" aria-labelledby="thread-h">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow"><b>07</b> · The thread</p>
+        <p class="eyebrow"><b>06</b> · The thread</p>
         <h2 id="thread-h">It has all been optimization</h2>
         <p>Sometimes I pose the problem. Sometimes nature already has, and the work is to find what was optimized. Two questions from my PhD, and then the same question asked of everything above.</p>
       </div>
@@ -1052,7 +999,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
             <tr><th scope="row"><a href="#cobra">Cobra</a></th><td>A policy for 15 motors</td><td>Rear the head and hold it up</td><td>reinforcement learning (PPO)</td></tr>
             <tr><th scope="row"><a href="#linking">Rod packing</a></th><td>Where every rod sits and points</td><td>Maximal total linking, no overlap</td><td>energy minimization (FIRE)</td></tr>
             <tr><th scope="row"><a href="#lattice">Snake lattice</a></th><td>A curvature change per span</td><td>Deploy from flat into a target surface</td><td>Gauss–Newton on the design · Newton's method for each equilibrium</td></tr>
-            <tr><th scope="row"><a href="#segment">X-ray scan</a></th><td>A cylinder for every rod</td><td>Account for the rod voxels</td><td>trimmed PCA · direct search</td></tr>
+            <tr><th scope="row"><a href="imaging.html#segment">X-ray scan</a></th><td>A cylinder for every rod</td><td>Account for the rod voxels</td><td>trimmed PCA · direct search</td></tr>
             <tr><th scope="row"><a href="#phd">Plant roots</a></th><td>Root length density with depth</td><td>Most water for the cost of growing</td><td>theory, data, model networks</td></tr>
             <tr><th scope="row">Human lungs</th><td>Diameter reduction per branching</td><td>Most oxygen per unit surface</td><td>theory against anatomy</td></tr>
           </tbody>
@@ -1100,7 +1047,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
       </ul>
     </div>
   </div>
-  <div class="wrap"><p class="fine">Updated October 2026 · Every live panel is a single self-contained page built from archived runs. The 3D viewers load three.js from a CDN, so they need a connection to draw.</p></div>
+  <div class="wrap"><p class="fine">Updated November 2026 · Every live panel is a single self-contained page built from archived runs. The 3D viewers load three.js from a CDN, so they need a connection to draw.</p></div>
 </footer>
 
 <script>
