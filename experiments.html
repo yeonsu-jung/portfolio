@@ -574,7 +574,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
         <p class="eyebrow">Portfolio · Experiments</p>
         <h1>Yeonsu Jung</h1>
         <p class="role">Research Associate · <a href="https://seas.harvard.edu/person/yeonsu-jung" rel="noopener">Applied Mathematics, Harvard SEAS</a> · Mahadevan group</p>
-        <p class="lede">Experiments on rod packings, mud nests, plant roots, rolling bodies, hydrogel beads on a hot pan, shark-skin riblets and creased sheets, measured with X-ray CT, load frames, video tracking and particle image velocimetry.</p>
+        <p class="lede">Experiments on rod packings, mud nests, plant roots, rolling bodies, hydrogel beads on a hot pan, shark-skin riblets and creased sheets, measured with X-ray CT (with the load applied inside the scanner), load frames, video tracking and particle image velocimetry.</p>
         <p class="how">Each entry says what my part was. The clips are muted and play while they are in view.</p>
         <ul class="links">
           <li><a class="primary" href="#lab">Start with the experiments</a></li>
@@ -584,12 +584,12 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
       </div>
 
       <nav class="sheet" aria-label="Six of the experiments">
-        <a href="#nest"><img src="media/exp/thumbs/nest.webp" width="480" height="300" alt="" decoding="async"><span><i>1.2</i>Mud nest</span></a>
+        <a href="#nest"><img src="media/exp/thumbs/nest.webp" width="480" height="300" alt="" decoding="async"><span><i>1.3</i>Mud nest</span></a>
         <a href="#rods"><img src="media/exp/thumbs/rods.webp" width="480" height="300" alt="" decoding="async"><span><i>1.1</i>Rod packing</span></a>
-        <a href="#riblets"><img src="media/exp/thumbs/riblet.webp" width="480" height="300" alt="" decoding="async"><span><i>1.6</i>Riblets and PIV</span></a>
-        <a href="#rolling"><img src="media/exp/thumbs/rolling.webp" width="480" height="300" alt="" decoding="async"><span><i>1.4</i>Rolling</span></a>
-        <a href="#creases"><img src="media/exp/thumbs/crease.webp" width="480" height="300" alt="" decoding="async"><span><i>1.7</i>Creases</span></a>
-        <a href="#leidenfrost"><img src="media/exp/thumbs/leidenfrost.webp" width="480" height="300" alt="" decoding="async"><span><i>1.5</i>Leidenfrost beads</span></a>
+        <a href="#riblets"><img src="media/exp/thumbs/riblet.webp" width="480" height="300" alt="" decoding="async"><span><i>1.7</i>Riblets and PIV</span></a>
+        <a href="#rolling"><img src="media/exp/thumbs/rolling.webp" width="480" height="300" alt="" decoding="async"><span><i>1.5</i>Rolling</span></a>
+        <a href="#creases"><img src="media/exp/thumbs/crease.webp" width="480" height="300" alt="" decoding="async"><span><i>1.8</i>Creases</span></a>
+        <a href="#leidenfrost"><img src="media/exp/thumbs/leidenfrost.webp" width="480" height="300" alt="" decoding="async"><span><i>1.6</i>Leidenfrost beads</span></a>
       </nav>
     </div>
   </div>
@@ -614,9 +614,18 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
           <p class="where"><span class="me">Y. Jung</span>, T. Plumb-Reyes, H.-Y. G. Lin, L. Mahadevan. <a href="https://doi.org/10.1073/pnas.2401868122" rel="noopener">Entanglement transition in random rod packings</a>. PNAS 122, e2401868122 (2025) · first author</p>
         </li>
 
+        <li id="insitu">
+          <figure class="clip"><img src="media/exp/insitu.webp" width="1280" height="720" alt="A clear cylinder packed with tangled steel rods, with a screw-driven plunger on top and wires to a force sensor, stands on the rotation stage of an X-ray CT scanner, between the X-ray source on the left and the detector on the right." loading="lazy" decoding="async"></figure>
+          <span class="kind"><i>1.2</i>Granular matter · in-situ X-ray CT</span>
+          <h3>Loading a packing inside the scanner</h3>
+          <p class="blurb">I built a loading rig for the scanner's rotation stage: a clear cylinder of rods, a plunger on a linear actuator and a force sensor. The packing is loaded and unloaded in steps, with a scan at each step, so the force and the 3D contact network come from the same sample. From each scan I count the contacts and compute the network's algebraic connectivity.</p>
+          <p class="more"><a href="imaging.html#xray">How the rods and contacts are found</a></p>
+          <p class="where">Ongoing · Harvard SEAS, 2025–</p>
+        </li>
+
         <li id="nest">
           <figure class="clip"><video muted loop playsinline controls preload="none" data-bytes="660796" poster="media/exp/nest.jpg" width="960" height="540" aria-label="A swallow's mud nest glued to a glass plate, with a 1 kg weight inside. A 3.15 kg weight is lowered in and released, and the nest breaks apart. Then a figure from the paper: a photo of the broken nest beside a finite-element map of the stress in it at the same load, highest along the top of the glued area and next to the support wings."><source src="media/exp/nest.mp4" type="video/mp4"></video></figure>
-          <span class="kind"><i>1.2</i>Granular composites · mechanical tests · FEM</span>
+          <span class="kind"><i>1.3</i>Granular composites · mechanical tests · FEM</span>
           <h3>Swallow nests: mud held by saliva</h3>
           <p class="blurb">Swallows build nests from mud granules that do not stick to one another, bonded by their own saliva. With S. Jung, I measured the strength of real nests and of polymer-bridged granules in bending and in a centrifuge, and printed nests from clay and mucin. I computed the stress in a 3D scan of a nest with finite elements (COMSOL): under the 41.5 N load at which a real nest broke, tension peaks where it tore away. Clip: the nest failing under 4.15 kg, then the fracture beside the computed stress (Fig. 2 of the paper).</p>
           <p class="where"><span class="me">Y. Jung</span>, S. Jung, S.-i. Lee, W. Kim, H.-Y. Kim. <a href="https://doi.org/10.1073/pnas.2018509118" rel="noopener">Avian mud nest architecture by self-secreted saliva</a>. PNAS 118, e2018509118 (2021) · first author</p>
@@ -624,7 +633,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
 
         <li id="roots">
           <figure class="clip light"><img src="media/exp/roots.webp" width="1280" height="720" alt="Two panels: the root ball of a rice plant on black, and a diagram of the setup, in which artificial roots in a bed of packed beads draw water from a reservoir while the bed sits on an electronic balance." loading="lazy" decoding="async"></figure>
-          <span class="kind"><i>1.3</i>Porous flow · PhD</span>
+          <span class="kind"><i>1.4</i>Porous flow · PhD</span>
           <h3>How roots should spread with depth</h3>
           <p class="blurb">Artificial roots draw water out of a bed of packed glass beads on a balance. With K. Park, I ran these experiments. With the theory, they show that roots take up the most water for the cost of growing them when their length density falls logarithmically with depth.</p>
           <p class="where"><span class="me">Y. Jung</span>, K. Park, K. H. Jensen, W. Kim, H.-Y. Kim. <a href="https://doi.org/10.1098/rsif.2019.0556" rel="noopener">A design principle of root length distribution of plants</a>. J. R. Soc. Interface 16, 20190556 (2019) · first author</p>
@@ -632,14 +641,14 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
 
         <li id="rolling">
           <figure class="clip"><video muted loop playsinline controls preload="none" data-bytes="182486" poster="media/exp/rolling.jpg" width="960" height="540" aria-label="Four views of a wooden ramp, each at a slightly different angle, with 3D-printed rollers rolling down it."><source src="media/exp/rolling.mp4" type="video/mp4"></video></figure>
-          <span class="kind"><i>1.4</i>Dynamics · video tracking</span>
+          <span class="kind"><i>1.5</i>Dynamics · video tracking</span>
           <h3>Irregular cylinders on a ramp</h3>
           <p class="blurb">3D-printed irregular cylinders roll down a rubber-coated ramp, tracked on video. As the ramp angle changes, their terminal speed goes through first- and second-order transitions. With D. Qian, I ran these experiments.</p>
           <p class="where">D. Qian, <span class="me">Y. Jung</span>, L. Mahadevan. <a href="https://doi.org/10.1073/pnas.2417161122" rel="noopener">Phase transitions in the rolling of irregular cylinders and spheres</a>. PNAS 122, e2417161122 (2025)</p>
         </li>
         <li id="leidenfrost">
           <figure class="clip"><video muted loop playsinline controls preload="none" data-bytes="2316002" poster="media/exp/leidenfrost.jpg" width="960" height="540" aria-label="A diagram of the setup: a hydrogel bead dropped into a heated steel pan, and vapour bursting where it meets the hot wall. Then three pans at 150, 300 and 375 °C, seen from above, each with a bead darting about, at three times real speed. Then each bead's tracked path drawn over its pan, with its speed plotted below."><source src="media/exp/leidenfrost.mp4" type="video/mp4"></video></figure>
-          <span class="kind"><i>1.5</i>Active matter · video tracking</span>
+          <span class="kind"><i>1.6</i>Active matter · video tracking</span>
           <h3>Hydrogel beads on a hot pan</h3>
           <p class="blurb">In a pan far above boiling, a water-swollen hydrogel bead floats on its own vapour. Each time it meets the hot wall, a burst of vapour kicks it back across the pan, so its energy comes only from the boundary. How fast it moves and how long it lasts depend on the temperature. M. Cho, J. Ha and I came up with the experiment together, and I model the motion. Clip: the paper's first supplementary movie.</p>
           <p class="where">M. Cho, <span class="me">Y. Jung</span>, J. Ha. Boundary-driven active matter and stochastic rectification via Leidenfrost impulses. In preparation</p>
@@ -647,7 +656,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
 
         <li id="riblets">
           <figure class="clip"><video muted loop playsinline controls preload="none" data-bytes="723057" poster="media/exp/riblet.jpg" width="960" height="540" aria-label="Three short shots: a mill cutting grooves into a plate, the grooved plate in a water tunnel, and a green laser sheet lighting tracer particles above the grooves."><source src="media/exp/riblet.mp4" type="video/mp4"></video></figure>
-          <span class="kind"><i>1.6</i>Fluid mechanics · PIV</span>
+          <span class="kind"><i>1.7</i>Fluid mechanics · PIV</span>
           <h3>Shark-skin riblets in a water tunnel</h3>
           <p class="blurb">Plates with riblets, the fine grooves of shark skin, were machined and tested in a water tunnel. A laser sheet and particle image velocimetry measured the flow over them. I worked on the modeling, fabrication and flow measurement, with S. Raayai-Ardakani.</p>
           <p class="where">Unpublished · Rowland Institute at Harvard, 2020–21</p>
@@ -655,7 +664,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
 
         <li id="creases">
           <figure class="clip"><video muted loop playsinline controls preload="none" data-bytes="454055" poster="media/exp/crease.jpg" width="960" height="540" aria-label="A thin metal pin, held in a mill, presses down into a thin sheet, which bends into a cone around it."><source src="media/exp/crease.mp4" type="video/mp4"></video></figure>
-          <span class="kind"><i>1.7</i>Thin sheets · mechanical tests</span>
+          <span class="kind"><i>1.8</i>Thin sheets · mechanical tests</span>
           <h3>Partial creases in thin sheets</h3>
           <p class="blurb">A pin pressed into a thin sheet leaves a crease that stops inside it. Creases were pressed with 3D-printed dies and on a mill, then profiled with a laser line and loaded in a load frame. With colleagues in the Mahadevan group.</p>
           <p class="where">Unpublished · Harvard SEAS, 2024</p>
