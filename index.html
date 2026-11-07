@@ -465,12 +465,10 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
 .fine { font-family: var(--f-mono); font-size: var(--fs-micro); color: var(--ink-3); margin-top: 30px; line-height: 1.6; }
 
 /* ---------- responsive ---------- */
-/* the four tabs and this page's sections share one line only on a wide screen */
-@media (max-width: 1280px) {
-  :root { --bar: 80px; }
-  .topbar .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 7px; }
-  .topbar .sections { flex-basis: 100%; margin-left: 0; }
-}
+/* the five tabs and this page's five sections never fit on one line: the sections get a second line */
+:root { --bar: 80px; }
+.topbar .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 7px; }
+.topbar .sections { flex-basis: 100%; margin-left: 0; }
 @media (max-width: 1040px) {
   :root { --bar: 80px; }
   .topbar .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 7px; }
@@ -482,6 +480,12 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .side figure { max-width: 520px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .contact-grid { grid-template-columns: minmax(0, 1fr); }
+}
+/* below this width the five tabs get a line of their own, under the name */
+@media (max-width: 900px) {
+  :root { --bar: 128px; }
+  .topbar nav[aria-label="Site"] { flex-basis: 100%; }
+  .tabs { flex-wrap: wrap; row-gap: 2px; margin-left: -11px; }
 }
 @media (max-width: 720px) {
   :root { --gutter: 16px; }
@@ -503,10 +507,11 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .topbar .sections a i { display: none; }
   .topbar .wrap { column-gap: 12px; }
   .tabs a { padding: 5px 8px; }
-  /* four tabs do not fit beside the name on a phone: they get a line of their own */
+  /* five tabs do not fit beside the name on a phone: they get a line of their own */
   :root { --bar: 128px; }
   .topbar .wrap { min-height: 0; padding-bottom: 2px; }
   .tabs { flex-wrap: wrap; row-gap: 2px; flex-basis: 100%; margin-left: -8px; }
+  .tabs .pf { display: none; }   /* on a phone the portfolio tabs drop "Portfolio ( )", so the five fit on two lines */
   .screen, .slide[data-kind="page"] .screen { aspect-ratio: auto; height: min(72vh, 560px); max-height: none; }
   .cards, .cards.pair, .asks { grid-template-columns: minmax(0, 1fr); }
   .slide + .slide { margin-top: 64px; }
@@ -531,8 +536,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     <nav aria-label="Site">
       <ul class="tabs">
         <li><a href="/">Home</a></li>
-        <li><a href="/portfolio/" aria-current="page">Portfolio (robotics)</a></li>
-        <li><a href="/portfolio/imaging.html">Portfolio (3D imaging)</a></li>
+        <li><a href="/portfolio/" aria-current="page"><span class="pf">Portfolio (</span>robotics<span class="pf">)</span></a></li>
+        <li><a href="/portfolio/imaging.html"><span class="pf">Portfolio (</span>3D imaging<span class="pf">)</span></a></li>
+        <li><a href="/portfolio/experiments.html"><span class="pf">Portfolio (</span>experiments<span class="pf">)</span></a></li>
         <li><a href="/publications.html">Publications</a></li>
       </ul>
     </nav>
@@ -541,9 +547,8 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
         <li><a href="#rods"><i>01</i>Rods</a></li>
         <li><a href="#many-body"><i>02</i>Many-body</a></li>
         <li><a href="#lattices"><i>03</i>Lattices</a></li>
-        <li><a href="#phd"><i>04</i>PhD</a></li>
-        <li><a href="#more"><i>05</i>More</a></li>
-        <li><a href="#thread"><i>06</i>Thread</a></li>
+        <li><a href="#more"><i>04</i>More</a></li>
+        <li><a href="#thread"><i>05</i>Thread</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -878,59 +883,11 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     </div>
   </section>
 
-  <!-- ================= 4 · PHD ================= -->
-  <section class="block" id="phd" aria-labelledby="phd-h">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow"><b>04</b> · PhD · Seoul National University · 2019</p>
-        <h2 id="phd-h">Soft matter and soft robotics</h2>
-        <p>My doctoral work, with Ho-Young Kim, was on how liquids move through sponges and soil, and on hydrogel devices.</p>
-      </div>
-      <ul class="cards">
-        <li>
-          <span class="kind">Sponge</span>
-          <h3><a href="https://doi.org/10.1126/sciadv.aao7051" rel="noopener">Poro-elasto-capillary wicking of cellulose sponges</a></h3>
-          <p class="by">J. Ha, J. Kim, <span class="me">Y. Jung</span>, G. Yun, D.-N. Kim, H.-Y. Kim</p>
-          <p class="where">Science Advances 4, eaao7051 (2018)</p>
-          <p class="blurb">Capillary rise of water in cellulose sponges whose pores change shape as they take up water.</p>
-        </li>
-        <li>
-          <span class="kind">Porous flow</span>
-          <h3><a href="https://doi.org/10.1098/rsif.2019.0556" rel="noopener">A design principle of root length distribution of plants</a></h3>
-          <p class="by"><span class="me">Y. Jung</span>, K. Park, K. H. Jensen, W. Kim, H.-Y. Kim</p>
-          <p class="where">Journal of the Royal Society Interface 16, 20190556 (2019) · first author</p>
-          <p class="blurb">If roots maximize water uptake for the metabolic cost of growing them, root length density should fall logarithmically with depth. Biological data and root-mimicking networks agree.</p>
-        </li>
-        <li>
-          <span class="kind">Hydrogels</span>
-          <h3><a href="https://doi.org/10.1126/scirobotics.aaz5405" rel="noopener">Ionic spiderwebs</a></h3>
-          <p class="by">Y. Lee, W. J. Song, <span class="me">Y. Jung</span>, H. Yoo, M.-Y. Kim, H.-Y. Kim, J.-Y. Sun</p>
-          <p class="where">Science Robotics 5, eaaz5405 (2020)</p>
-          <p class="blurb">Threads that emulate a spider's capturing strategies with electrostatics, using a single pair of threads.</p>
-        </li>
-        <li>
-          <span class="kind">Hydrogels</span>
-          <h3><a href="https://doi.org/10.1126/sciadv.abg9203" rel="noopener">Soft artificial electroreceptors for noncontact spatial perception</a></h3>
-          <p class="by">W. J. Song*, Y. Lee*, <span class="me">Y. Jung*</span>, Y.-W. Kang, J. Kim, J.-M. Park, Y.-L. Park, H.-Y. Kim, J.-Y. Sun</p>
-          <p class="where">Science Advances 7, eabg9203 (2021) · * equal contribution</p>
-          <p class="blurb">Soft electroreceptors, inspired by electroreception in rays, that locate objects without touching them.</p>
-        </li>
-        <li>
-          <span class="kind">Hydrogels</span>
-          <h3><a href="https://doi.org/10.1038/ncomms11223" rel="noopener">Capillarity ion concentration polarization as spontaneous desalting mechanism</a></h3>
-          <p class="by">S. Park, <span class="me">Y. Jung</span>, S. Y. Son, I. Cho, Y. Cho, H. Lee, H.-Y. Kim, S. J. Kim</p>
-          <p class="where">Nature Communications 7, 11223 (2016)</p>
-          <p class="blurb">Capillarity alone, with no electrical power, drives ion-selective transport through a nanoporous material and desalts the liquid next to it by more than 90%.</p>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ================= 5 · MISCELLANEOUS ================= -->
+  <!-- ================= 4 · MISCELLANEOUS ================= -->
   <section class="block" id="more" aria-labelledby="more-h">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow"><b>05</b> · Miscellaneous</p>
+        <p class="eyebrow"><b>04</b> · Miscellaneous</p>
         <h2 id="more-h">Smaller tools and studies</h2>
       </div>
       <ul class="cards pair">
@@ -946,29 +903,15 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
           <h3>Low-Reynolds swimmer in MuJoCo</h3>
           <p class="blurb">A flagellated swimmer driven through a resistance matrix. It advances 0.0326 m per motor revolution regardless of viscosity, and a scallop-theorem test closes to 0.02%.</p>
         </li>
-        <li>
-          <span class="kind">Paper</span>
-          <h3><a href="https://doi.org/10.1073/pnas.2417161122" rel="noopener">Phase transitions in the rolling of irregular cylinders and spheres</a></h3>
-          <p class="by">D. Qian, <span class="me">Y. Jung</span>, L. Mahadevan</p>
-          <p class="where">PNAS 122, e2417161122 (2025)</p>
-          <p class="blurb">How an irregular cylinder or sphere rolls down an incline: its terminal speed goes through first- and second-order transitions, and rolling spheres trace closed orbits that period-double.</p>
-        </li>
-        <li>
-          <span class="kind">Paper</span>
-          <h3><a href="https://doi.org/10.1073/pnas.2018509118" rel="noopener">Avian mud nest architecture by self-secreted saliva</a></h3>
-          <p class="by"><span class="me">Y. Jung</span>, S. Jung, S.-i. Lee, W. Kim, H.-Y. Kim</p>
-          <p class="where">PNAS 118, e2018509118 (2021) · first author</p>
-          <p class="blurb">How swallows and phoebes build strong nests out of incohesive mud granules, using their saliva as a paste.</p>
-        </li>
       </ul>
     </div>
   </section>
 
-  <!-- ================= 6 · THE THREAD ================= -->
+  <!-- ================= 5 · THE THREAD ================= -->
   <section class="block" id="thread" aria-labelledby="thread-h">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow"><b>06</b> · The thread</p>
+        <p class="eyebrow"><b>05</b> · The thread</p>
         <h2 id="thread-h">It has all been optimization</h2>
         <p>Sometimes I pose the problem. Sometimes nature already has, and the work is to find what was optimized. Two questions from my PhD, and then the same question asked of everything above.</p>
       </div>
@@ -1000,7 +943,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
             <tr><th scope="row"><a href="#linking">Rod packing</a></th><td>Where every rod sits and points</td><td>Maximal total linking, no overlap</td><td>energy minimization (FIRE)</td></tr>
             <tr><th scope="row"><a href="#lattice">Snake lattice</a></th><td>A curvature change per span</td><td>Deploy from flat into a target surface</td><td>Gauss–Newton on the design · Newton's method for each equilibrium</td></tr>
             <tr><th scope="row"><a href="imaging.html#segment">X-ray scan</a></th><td>A cylinder for every rod</td><td>Account for the rod voxels</td><td>trimmed PCA · direct search</td></tr>
-            <tr><th scope="row"><a href="#phd">Plant roots</a></th><td>Root length density with depth</td><td>Most water for the cost of growing</td><td>theory, data, model networks</td></tr>
+            <tr><th scope="row"><a href="experiments.html#roots">Plant roots</a></th><td>Root length density with depth</td><td>Most water for the cost of growing</td><td>theory, data, model networks</td></tr>
             <tr><th scope="row">Human lungs</th><td>Diameter reduction per branching</td><td>Most oxygen per unit surface</td><td>theory against anatomy</td></tr>
           </tbody>
         </table>

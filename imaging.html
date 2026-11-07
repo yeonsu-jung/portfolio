@@ -463,7 +463,7 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
 .fine { font-family: var(--f-mono); font-size: var(--fs-micro); color: var(--ink-3); margin-top: 30px; line-height: 1.6; }
 
 /* ---------- responsive ---------- */
-/* the four tabs and this page's sections share one line only on a wide screen */
+/* the five tabs and this page's sections share one line only on a wide screen */
 @media (max-width: 1280px) {
   :root { --bar: 80px; }
   .topbar .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 7px; }
@@ -480,6 +480,12 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .side figure { max-width: 520px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .contact-grid { grid-template-columns: minmax(0, 1fr); }
+}
+/* below this width the five tabs get a line of their own, under the name */
+@media (max-width: 900px) {
+  :root { --bar: 128px; }
+  .topbar nav[aria-label="Site"] { flex-basis: 100%; }
+  .tabs { flex-wrap: wrap; row-gap: 2px; margin-left: -11px; }
 }
 @media (max-width: 720px) {
   :root { --gutter: 16px; }
@@ -501,10 +507,11 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
   .topbar .sections a i { display: none; }
   .topbar .wrap { column-gap: 12px; }
   .tabs a { padding: 5px 8px; }
-  /* four tabs do not fit beside the name on a phone: they get a line of their own */
+  /* five tabs do not fit beside the name on a phone: they get a line of their own */
   :root { --bar: 128px; }
   .topbar .wrap { min-height: 0; padding-bottom: 2px; }
   .tabs { flex-wrap: wrap; row-gap: 2px; flex-basis: 100%; margin-left: -8px; }
+  .tabs .pf { display: none; }   /* on a phone the portfolio tabs drop "Portfolio ( )", so the five fit on two lines */
   .screen, .slide[data-kind="page"] .screen { aspect-ratio: auto; height: min(72vh, 560px); max-height: none; }
   .cards, .cards.pair, .asks { grid-template-columns: minmax(0, 1fr); }
   .slide + .slide { margin-top: 64px; }
@@ -529,8 +536,9 @@ footer.contact { border-top: 2px solid var(--ink); padding-block: 46px 64px; }
     <nav aria-label="Site">
       <ul class="tabs">
         <li><a href="/">Home</a></li>
-        <li><a href="/portfolio/">Portfolio (robotics)</a></li>
-        <li><a href="/portfolio/imaging.html" aria-current="page">Portfolio (3D imaging)</a></li>
+        <li><a href="/portfolio/"><span class="pf">Portfolio (</span>robotics<span class="pf">)</span></a></li>
+        <li><a href="/portfolio/imaging.html" aria-current="page"><span class="pf">Portfolio (</span>3D imaging<span class="pf">)</span></a></li>
+        <li><a href="/portfolio/experiments.html"><span class="pf">Portfolio (</span>experiments<span class="pf">)</span></a></li>
         <li><a href="/publications.html">Publications</a></li>
       </ul>
     </nav>

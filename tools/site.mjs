@@ -41,9 +41,9 @@ const PAGES = {
 };
 const HIDE_PANELS = '.panel, #controls, #divider, #heads { display: none !important; }';
 
-// ------------------------------------------------------------------ the slides in the two pages
+// ------------------------------------------------------------------ the slides in the pages
 
-const HTML = ['index.html', 'imaging.html'];
+const HTML = ['index.html', 'imaging.html', 'experiments.html'];
 
 function slides() {
   const unesc = s => s.replaceAll('&amp;', '&').replaceAll('&quot;', '"');
