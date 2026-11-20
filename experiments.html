@@ -574,7 +574,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
         <p class="eyebrow">Portfolio · Experiments</p>
         <h1>Yeonsu Jung</h1>
         <p class="role">Research Associate · <a href="https://seas.harvard.edu/person/yeonsu-jung" rel="noopener">Applied Mathematics, Harvard SEAS</a> · Mahadevan group</p>
-        <p class="lede">Experiments on rod packings, mud nests, plant roots, rolling bodies, hydrogel beads on a hot pan, shark-skin riblets and creased sheets, measured with X-ray CT (with the load applied inside the scanner), load frames, video tracking and particle image velocimetry.</p>
+        <p class="lede">Experiments on rod packings, mud nests, plant roots, rolling bodies, hydrogel beads on a hot pan, shark-skin riblets, creased sheets and curved shells sliding on sandpaper, measured with X-ray CT (with the load applied inside the scanner), load frames, a friction rig, video tracking and particle image velocimetry.</p>
         <p class="how">Each entry says what my part was. The clips are muted and play while they are in view.</p>
         <ul class="links">
           <li><a class="primary" href="#lab">Start with the experiments</a></li>
@@ -670,6 +670,14 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
           <p class="where">Unpublished · Harvard SEAS, 2024</p>
         </li>
 
+        <li id="shells">
+          <figure class="clip"><video muted loop playsinline controls preload="none" data-bytes="727166" poster="media/exp/shell.jpg" width="960" height="540" aria-label="The rig: an aluminium gantry on an optical table, with a stepper motor on a lead screw, a carriage holding two small load cells above a sheet of sandpaper, and a camera. Then, from the side, a clear curved shell held by the load cells is pushed and pulled across the sandpaper. Then a cylindrical shell printed with a grid, seen from the front as it is dragged, and a saddle-shaped shell bending as it drags; these two are sped up."><source src="media/exp/shell.mp4" type="video/mp4"></video></figure>
+          <span class="kind"><i>1.9</i>Thin shells · friction · instrumentation</span>
+          <h3>Stick–slip of thin curved shells</h3>
+          <p class="blurb">A thin shell dragged over sandpaper sticks, builds up force, then slips: a tabletop analogue of stick–slip at faults. I did this experiment from start to finish. I thermoformed shells from 0.25 mm acrylic film on 3D-printed molds: cylinders of several radii, spheres and saddles. I built the rig, in which a stepper motor on a lead screw drags the shell at 0.01 to 10 mm/s, two load cells measure the normal and tangential force, and a camera films the contact. I wrote the software that drives the motor through an Arduino, reads the forces through a DAQ and runs push–pull cycles, and analysed the slips in MATLAB. More curved cylinders slip at higher forces and more often, especially when pushed; a sphere barely resists a push; a saddle's deformation stays localized near the contact. Clip: the rig, a cylinder pushed and pulled, a gridded cylinder, and a saddle (the last two sped up).</p>
+          <p class="where">Unpublished · Harvard SEAS, 2021–24</p>
+        </li>
+
       </ul>
     </div>
   </section>
@@ -724,7 +732,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
         <li>
           <span class="kind"><i>2.6</i>Microfluidics</span>
           <h3><a href="https://doi.org/10.1038/ncomms11223" rel="noopener">Capillarity ion concentration polarization as spontaneous desalting mechanism</a></h3>
-          <p class="blurb">Capillary flow into a nanoporous material desalts the liquid next to it, with no power supplied. I solved for the steady state.</p>
+          <p class="blurb">Capillary flow into a nanoporous material desalts the liquid next to it, with no power supplied. I solved for the steady state, and helped S. Park make the SU-8 patterns in a cleanroom.</p>
           <p class="where">S. Park*, <span class="me">Y. Jung*</span>, et al. Nature Communications 7, 11223 (2016) · * equal contribution</p>
         </li>
         <li>
