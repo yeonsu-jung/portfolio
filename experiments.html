@@ -574,7 +574,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
         <p class="eyebrow">Portfolio · Experiments</p>
         <h1>Yeonsu Jung</h1>
         <p class="role">Research Associate · <a href="https://seas.harvard.edu/person/yeonsu-jung" rel="noopener">Applied Mathematics, Harvard SEAS</a> · Mahadevan group</p>
-        <p class="lede">Experiments on rod packings, mud nests, plant roots, rolling bodies, hydrogel beads on a hot pan, shark-skin riblets, creased sheets and curved shells sliding on sandpaper, measured with X-ray CT (with the load applied inside the scanner), load frames, a friction rig, video tracking and particle image velocimetry.</p>
+        <p class="lede">Experiments on rod packings, mud nests, plant roots, rolling bodies, hydrogel beads on a hot pan, shark-skin riblets, creased sheets and curved shells (thermoformed on 3D-printed molds) sliding on sandpaper, measured with X-ray CT (with the load applied inside the scanner), load frames, a friction rig, video tracking and particle image velocimetry.</p>
         <p class="how">Each entry says what my part was. The clips are muted and play while they are in view.</p>
         <ul class="links">
           <li><a class="primary" href="#lab">Start with the experiments</a></li>
@@ -589,7 +589,7 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
         <a href="#riblets"><img src="media/exp/thumbs/riblet.webp" width="480" height="300" alt="" decoding="async"><span><i>1.7</i>Riblets and PIV</span></a>
         <a href="#rolling"><img src="media/exp/thumbs/rolling.webp" width="480" height="300" alt="" decoding="async"><span><i>1.5</i>Rolling</span></a>
         <a href="#shells"><img src="media/exp/thumbs/shell.webp" width="480" height="300" alt="" decoding="async"><span><i>1.9</i>Shell friction</span></a>
-        <a href="#leidenfrost"><img src="media/exp/thumbs/leidenfrost.webp" width="480" height="300" alt="" decoding="async"><span><i>1.6</i>Leidenfrost beads</span></a>
+        <a href="#thermoforming"><img src="media/exp/thumbs/thermoform.webp" width="480" height="300" alt="" decoding="async"><span><i>1.10</i>Thermoforming</span></a>
       </nav>
     </div>
   </div>
@@ -675,6 +675,13 @@ p.all { margin-top: 30px; font-family: var(--f-mono); font-size: var(--fs-mono);
           <span class="kind"><i>1.9</i>Thin shells · friction · instrumentation</span>
           <h3>Stick–slip of thin curved shells</h3>
           <p class="blurb">A thin shell dragged over sandpaper sticks, builds up force, then slips: a tabletop analogue of stick–slip at faults. I did this experiment from start to finish. I thermoformed shells from 0.25 mm acrylic film on 3D-printed molds: cylinders of several radii, spheres and saddles. I built the rig, in which a stepper motor on a lead screw drags the shell at 0.01 to 10 mm/s, two load cells measure the normal and tangential force, and a camera films the contact. I wrote the software that drives the motor through an Arduino, reads the forces through a DAQ and runs push–pull cycles, and analysed the slips in MATLAB. More curved cylinders slip at higher forces and more often, especially when pushed; a sphere barely resists a push; a saddle's deformation stays localized near the contact. Clip: the rig, a cylinder pushed and pulled, a gridded cylinder, and a saddle (the last two sped up).</p>
+          <p class="where">Unpublished · Harvard SEAS, 2021–24</p>
+        </li>
+        <li id="thermoforming">
+          <figure class="clip"><video muted loop playsinline controls preload="none" data-bytes="990745" poster="media/exp/thermoform.jpg" width="960" height="540" aria-label="CAD models of the molds: a flat plate and cylinders of two radii, each with its holder. Then, in CAD, a torus and a sphere cut down to a saddle-shaped patch and a spherical cap. Then a vacuum former, filmed on a phone at three times real speed: a 3D-printed mold on the platen, the heater lowered over a clamped acrylic sheet, and the softened sheet pulled down over the mold. Then seven clear cylindrical shells in a row, from tightly curved to nearly flat, and a bench of clear doubly curved shells."><source src="media/exp/thermoform.mp4" type="video/mp4"></video></figure>
+          <span class="kind"><i>1.10</i>Fabrication · 3D printing · thermoforming</span>
+          <h3>Thermoformed shells on 3D-printed molds</h3>
+          <p class="blurb">The shells of 1.9 had to have a set curvature and nothing else, so I made them. I designed the molds in CAD: cylinders of seven radii, from 28 mm to nearly flat, and doubly curved patches cut from a sphere (positive Gaussian curvature) and from the inside of a torus (negative, a saddle), each 45 mm by 45 mm. I 3D-printed the molds, and the holders that clamp each shell to the load cells, and thermoformed 0.25 mm acrylic film over the molds in a vacuum former. One mold and one holder per geometry gave a family of shells that differ only in shape, so the friction measurements could isolate the effect of curvature. Clip: the mold designs, the sphere and torus cuts, forming a shell, the cylinder series, and a batch of doubly curved shells.</p>
           <p class="where">Unpublished · Harvard SEAS, 2021–24</p>
         </li>
 
